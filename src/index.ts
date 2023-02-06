@@ -10,7 +10,7 @@ class MetalSDK {
     this.appId = appId;
   }
 
-  index(input: string) {
+  index(input: string): Promise<object> {
     return axios.post(
       `${API_URL}/v1/index`,
       { input, app: this.appId },
@@ -18,7 +18,7 @@ class MetalSDK {
     );
   }
 
-  search(input: String) {
+  search(input: String): Promise<object> {
     return axios.post(
       `${API_URL}/v1/search`,
       { input, app: this.appId },
