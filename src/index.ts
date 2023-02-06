@@ -23,7 +23,7 @@ class MetalSDK {
 
     return axios.post(
       `${API_URL}/v1/index`,
-      { input, app: appId },
+      { input, app },
       { headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -39,7 +39,7 @@ class MetalSDK {
     }
     return axios.post(
       `${API_URL}/v1/search`,
-      { input, app: appId },
+      { input, app },
       { headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
