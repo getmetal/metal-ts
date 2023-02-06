@@ -5,7 +5,8 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "publish": "npm publish  --access public"
   },
   "license": "MIT",
   "keywords": [],
