@@ -15,7 +15,7 @@ Then in your app you can use it to index.
 import Metal from '@getmetal/metal-sdk'
 
 
-const metal = new Metal('app-id');
+const metal = new Metal('api-key', 'client-id', 'app-id');
 
 await metal.index('Data to index! Heavy metal is the law');
 
