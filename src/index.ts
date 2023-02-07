@@ -32,7 +32,7 @@ class MetalSDK {
     );
   }
 
-  search(input: string, appId?: string): Promise<object> {
+  search(input: string, appId?: string): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required');
