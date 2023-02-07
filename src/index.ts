@@ -1,6 +1,6 @@
 import axios from 'axios';
-
-const API_URL: string = 'https://api.getmetal.io';
+import { API_URL } from './constants';
+import { IndexPayload, SearchPayload } from './types';
 
 
 class MetalSDK {
@@ -15,15 +15,20 @@ class MetalSDK {
   }
   
 
-  index(input: string, appId?: string): Promise<object> {
+  index(payload: IndexPayload, appId?: string): Promise<object> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required');
     }
 
+    const { imageBase64, imageUrl, text } = payload;
+    if (!imageBase64 && !imageUrl && !text) {
+      throw new Error('payload required.');
+    }    
+
     return axios.post(
       `${API_URL}/v1/index`,
-      { input, app },
+      { ...payload, app },
       { headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -32,14 +37,20 @@ class MetalSDK {
     );
   }
 
-  search(input: string, appId?: string): Promise<object[]> {
+  search(payload: SearchPayload, appId?: string): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
-      throw new Error('appId required');
+      throw new Error('appId required.');
     }
+
+    const { imageBase64, imageUrl, text } = payload;
+    if (!imageBase64 && !imageUrl && !text) {
+      throw new Error('payload required.');
+    }
+
     return axios.post(
       `${API_URL}/v1/search`,
-      { input, app },
+      { ...payload, app },
       { headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
