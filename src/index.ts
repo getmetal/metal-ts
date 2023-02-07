@@ -14,7 +14,7 @@ class MetalSDK {
     this.appId = appId;
   }
 
-  index(payload: IndexPayload, appId?: string): Promise<object> {
+  async index(payload: IndexPayload, appId?: string): Promise<object> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required');
@@ -25,7 +25,7 @@ class MetalSDK {
       throw new Error('payload required.');
     }    
 
-    return axios.post(
+    const { data } = await axios.post(
       `${API_URL}/v1/index`,
       { ...payload, app },
       { headers: {
@@ -34,9 +34,11 @@ class MetalSDK {
         'x-metal-client-id': this.clientId,
       } }
     );
+
+    return data;
   }
 
-  search(payload: SearchPayload, appId?: string): Promise<object[]> {
+  async search(payload: SearchPayload, appId?: string): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required.');
@@ -47,7 +49,7 @@ class MetalSDK {
       throw new Error('payload required.');
     }
 
-    return axios.post(
+    const { data } = await axios.post(
       `${API_URL}/v1/search`,
       { ...payload, app },
       { headers: {
@@ -55,7 +57,9 @@ class MetalSDK {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       } }
-    );
+    )
+
+    return data;
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Metal SDK",
   "scripts": {
     "prepare": "npm run build",
