@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Metal SDK",
   "scripts": {
     "prepare": "npm run build",
@@ -18,13 +18,10 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/es/index.js",
-  "types": "./dist/types/index.d.ts",
-  "exports": {
-    "import": "./dist/es/index.mjs",
-    "require": "./dist/cjs/index.js"
-  },
+
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.50.0",
