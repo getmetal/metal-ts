@@ -13,7 +13,6 @@ class MetalSDK {
     this.clientId = clientId;
     this.appId = appId;
   }
-  
 
   index(payload: IndexPayload, appId?: string): Promise<object> {
     const app = appId || this.appId;
