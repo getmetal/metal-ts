@@ -44,11 +44,6 @@ class MetalSDK {
       throw new Error('appId required.');
     }
 
-    const { imageBase64, imageUrl, text } = payload;
-    if (!imageBase64 && !imageUrl && !text) {
-      throw new Error('payload required.');
-    }
-
     const { data } = await axios.post(
       `${API_URL}/v1/search`,
       { ...payload, app },
