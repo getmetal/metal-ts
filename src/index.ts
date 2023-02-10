@@ -2,7 +2,6 @@ import axios from 'axios';
 import { API_URL } from './constants';
 import { IndexPayload, SearchPayload } from './types';
 
-
 class MetalSDK {
   apiKey: string;
   clientId: string;
@@ -20,19 +19,21 @@ class MetalSDK {
       throw new Error('appId required');
     }
 
-    const { imageBase64, imageUrl, text } = payload;
-    if (!imageBase64 && !imageUrl && !text) {
+    const { imageBase64, imageUrl, text, embedding } = payload;
+    if (!imageBase64 && !imageUrl && !text && !embedding) {
       throw new Error('payload required.');
-    }    
+    }
 
     const { data } = await axios.post(
       `${API_URL}/v1/index`,
       { ...payload, app },
-      { headers: {
-        'Content-Type': 'application/json',
-        'x-metal-api-key': this.apiKey,
-        'x-metal-client-id': this.clientId,
-      } }
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-metal-api-key': this.apiKey,
+          'x-metal-client-id': this.clientId,
+        },
+      }
     );
 
     return data;
@@ -52,12 +53,14 @@ class MetalSDK {
     const { data } = await axios.post(
       `${API_URL}/v1/search`,
       { ...payload, app },
-      { headers: {
-        'Content-Type': 'application/json',
-        'x-metal-api-key': this.apiKey,
-        'x-metal-client-id': this.clientId,
-      } }
-    )
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-metal-api-key': this.apiKey,
+          'x-metal-client-id': this.clientId,
+        },
+      }
+    );
 
     return data;
   }
