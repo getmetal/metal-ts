@@ -19,8 +19,8 @@ class MetalSDK {
       throw new Error('appId required');
     }
 
-    const { imageBase64, imageUrl, text } = payload;
-    if (!imageBase64 && !imageUrl && !text) {
+    const { imageBase64, imageUrl, text, embedding } = payload;
+    if (!imageBase64 && !imageUrl && !text && !embedding) {
       throw new Error('payload required.');
     }
 
