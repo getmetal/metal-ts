@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { API_URL } from './constants';
-import { IndexPayload, SearchPayload } from './types';
+import { IndexPayload, SearchPayload, TuningPayload } from './types';
 
 class MetalSDK {
   apiKey: string;
@@ -52,6 +52,27 @@ class MetalSDK {
 
     const { data } = await axios.post(
       `${API_URL}/v1/search`,
+      { ...payload, app },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-metal-api-key': this.apiKey,
+          'x-metal-client-id': this.clientId,
+        },
+      }
+    );
+
+    return data;
+  }
+
+  async tune(payload: TuningPayload, appId?: string): Promise<object> {
+    const app = appId || this.appId;
+    if (!app) {
+      throw new Error('appId required.');
+    }
+
+    const { data } = await axios.post(
+      `${API_URL}/v1/apps/${app}/tunings`,
       { ...payload, app },
       {
         headers: {
