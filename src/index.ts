@@ -73,7 +73,7 @@ class MetalSDK {
 
     const { data } = await axios.post(
       `${API_URL}/v1/apps/${app}/tunings`,
-      { ...payload, app },
+      { ...payload },
       {
         headers: {
           'Content-Type': 'application/json',
