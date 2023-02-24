@@ -21,20 +21,27 @@ class MetalSDK {
 
     const { imageBase64, imageUrl, text, embedding } = payload;
     if (!imageBase64 && !imageUrl && !text && !embedding) {
-      throw new Error('payload required.');
+      throw new Error('payload required');
     }
 
-    const { data } = await axios.post(
-      `${API_URL}/v1/index`,
-      { ...payload, app },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-metal-api-key': this.apiKey,
-          'x-metal-client-id': this.clientId,
-        },
-      }
-    );
+    const body = { app } as IndexPayload;
+    if (imageBase64) {
+      body.imageBase64 = imageBase64;
+    } else if (imageUrl) {
+      body.imageUrl = imageUrl;
+    } else if (text) {
+      body.text = text;
+    } else if (embedding) {
+      body.embedding = embedding;
+    }
+
+    const { data } = await axios.post(`${API_URL}/v1/index`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    });
 
     return data;
   }
@@ -42,25 +49,30 @@ class MetalSDK {
   async search(payload: SearchPayload, appId?: string): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
-      throw new Error('appId required.');
+      throw new Error('appId required');
     }
 
     const { imageBase64, imageUrl, text } = payload;
     if (!imageBase64 && !imageUrl && !text) {
-      throw new Error('payload required.');
+      throw new Error('payload required');
     }
 
-    const { data } = await axios.post(
-      `${API_URL}/v1/search`,
-      { ...payload, app },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-metal-api-key': this.apiKey,
-          'x-metal-client-id': this.clientId,
-        },
-      }
-    );
+    const body = { app } as SearchPayload;
+    if (imageBase64) {
+      body.imageBase64 = imageBase64;
+    } else if (imageUrl) {
+      body.imageUrl = imageUrl;
+    } else if (text) {
+      body.text = text;
+    }
+
+    const { data } = await axios.post(`${API_URL}/v1/search`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    });
 
     return data;
   }

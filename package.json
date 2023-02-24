@@ -5,7 +5,7 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tsc",
-    "test": "jest --coverage",
+    "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts",
     "publish": "npm publish  --access public"
   },
   "license": "Apache 2.0",
@@ -18,8 +18,8 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/metal.js",
+  "types": "dist/metal.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",
