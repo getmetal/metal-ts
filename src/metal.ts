@@ -80,7 +80,11 @@ class MetalSDK {
   async tune(payload: TuningPayload, appId?: string): Promise<object> {
     const app = appId || this.appId;
     if (!app) {
-      throw new Error('appId required.');
+      throw new Error('appId required');
+    }
+
+    if (!payload.idA || !payload.idB || !payload.label) {
+      throw new Error('idA, idB, & label required for payload');
     }
 
     const { data } = await axios.post(

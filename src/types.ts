@@ -15,5 +15,5 @@ export interface SearchPayload {
 export interface TuningPayload {
   idA: string;
   idB: string;
-  result: '-1' | '1';
+  label: -1 | 0 | 1;
 }
