@@ -1,6 +1,8 @@
-# Metal SDK
+# Metal TypeScript SDK
 
-## Usage
+Checkout our [Developer Documentation](https://docs.getmetal.io/sdk-typescript).
+
+## Setup
 
 ```bash
   npm i --save @getmetal/metal-sdk
@@ -8,22 +10,47 @@
   yarn add @getmetal/metal-sdk
 ```
 
-Then in your app you can use it to index.
+## Usage
 
+### Indexing
 
-```javascript
-import Metal from '@getmetal/metal-sdk'
-
+```ts
+import Metal from '@getmetal/metal-sdk';
 
 const metal = new Metal('api-key', 'client-id', 'app-id');
 
 // Index Text
-await metal.index({ text: 'Data to index! Heavy metal is the law' });
+await metal.index({ text: 'text to index' });
 
 // Index Image from URL
-await metal.index({ imageUrl: 'https://images.unsplash.com/photo-1593573969589-c416b9c926de' });
+await metal.index({ imageUrl: 'https://image.png' });
 
 // Index Image from Base64
 await metal.index({ imageBase64: '<base-64-str>' });
+```
 
+### Searching
+
+```ts
+import Metal from '@getmetal/metal-sdk';
+
+const metal = new Metal('api-key', 'client-id', 'app-id');
+
+// Index Text
+await metal.search({ text: 'search by text' });
+await metal.search({ imageUrl: 'search-by-image.png' });
+```
+
+### Tuning
+
+```ts
+import Metal from '@getmetal/metal-sdk';
+
+const metal = new Metal('api-key', 'client-id', 'app-id');
+
+// Tune to decrease distance
+await metal.tune('id-a', 'id-b', 1);
+
+// Tune to increase distance
+await metal.tune('id-a', 'id-b', -1);
 ```
