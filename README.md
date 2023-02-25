@@ -1,6 +1,12 @@
-# Metal TypeScript SDK
+# 🤘 Metal TypeScript SDK
 
-Checkout our [Developer Documentation](https://docs.getmetal.io/sdk-typescript).
+[**Developer Documentation**](https://docs.getmetal.io/sdk-typescript)
+
+## Coverage
+
+| File     | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s |
+| -------- | ------- | -------- | ------- | ------- | ----------------- |
+| metal.ts | 100     | 100      | 100     | 100     |
 
 ## Setup
 
