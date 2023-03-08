@@ -87,17 +87,15 @@ class MetalSDK {
       throw new Error('idA, idB, & label required for payload');
     }
 
-    const { data } = await axios.post(
-      `${API_URL}/v1/apps/${app}/tunings`,
-      { ...payload },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'x-metal-api-key': this.apiKey,
-          'x-metal-client-id': this.clientId,
-        },
-      }
-    );
+    const body = { app, ...payload } as TuningPayload;
+
+    const { data } = await axios.post(`${API_URL}/v1/tune`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    });
 
     return data;
   }
