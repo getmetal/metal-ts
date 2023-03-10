@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Metal SDK",
   "scripts": {
     "prepare": "npm run build",
@@ -18,8 +18,8 @@
   "files": [
     "dist"
   ],
-  "main": "dist/metal.js",
-  "types": "dist/metal.d.ts",
+  "main": "dist/src/metal.js",
+  "types": "dist/src/metal.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",
