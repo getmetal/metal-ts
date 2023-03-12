@@ -25,6 +25,10 @@ class MetalSDK {
     }
 
     const body = { app } as IndexPayload;
+    if (payload?.id) {
+      body.id = payload.id;
+    }
+
     if (imageBase64) {
       body.imageBase64 = imageBase64;
     } else if (imageUrl) {
