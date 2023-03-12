@@ -1,4 +1,5 @@
 export interface IndexPayload {
+  id?: string;
   imageBase64?: string;
   imageUrl?: string;
   text?: string;
