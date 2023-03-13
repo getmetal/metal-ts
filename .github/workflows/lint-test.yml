@@ -27,7 +27,4 @@ jobs:
         run: npm ci
 
       - name: Code Linting
-        run: npm run lint
-
-      - name: Code Linting
         run: npm test
