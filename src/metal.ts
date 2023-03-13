@@ -50,7 +50,7 @@ class MetalSDK {
     return data;
   }
 
-  async search(payload: SearchPayload, appId?: string, includeFullDocument: boolean): Promise<object[]> {
+  async search(payload: SearchPayload, appId?: string, includeFullDocument?: boolean): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required');
@@ -70,7 +70,7 @@ class MetalSDK {
       body.text = text;
     }
 
-    const url = `${API_URL}/v1/search`
+    let url = `${API_URL}/v1/search`
 
     if (includeFullDocument) {
       url += '?includeDoc=true'
