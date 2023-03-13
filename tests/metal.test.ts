@@ -188,6 +188,25 @@ describe('MetalSDK', () => {
         AXIOS_OPTS
       );
     });
+
+    it('should add includeDoc=true querystring', async () => {
+      const appId = 'app-id';
+      const text = 'text-to-search';
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
+
+      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+
+      const result = await metal.search({ text }, undefined, true);
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/search?includeDoc=true',
+        {
+          text,
+          app: appId,
+        },
+        AXIOS_OPTS
+      );
+    });
   });
 
   describe('tune()', () => {
