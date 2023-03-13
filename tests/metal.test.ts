@@ -236,8 +236,9 @@ describe('MetalSDK', () => {
       const result = await metal.tune({ idA, idB, label });
 
       expect(axios.post).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/apps/${appId}/tunings`,
+        `https://api.getmetal.io/v1/tune`,
         {
+          app: appId,
           idA,
           idB,
           label,
