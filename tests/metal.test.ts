@@ -188,6 +188,25 @@ describe('MetalSDK', () => {
         AXIOS_OPTS
       );
     });
+
+    it('should add idsOnly=true querystring', async () => {
+      const appId = 'app-id';
+      const text = 'text-to-search';
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
+
+      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+
+      const result = await metal.search({ text }, undefined, true);
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/search?idsOnly=true',
+        {
+          text,
+          app: appId,
+        },
+        AXIOS_OPTS
+      );
+    });
   });
 
   describe('tune()', () => {
@@ -217,8 +236,9 @@ describe('MetalSDK', () => {
       const result = await metal.tune({ idA, idB, label });
 
       expect(axios.post).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/apps/${appId}/tunings`,
+        `https://api.getmetal.io/v1/tune`,
         {
+          app: appId,
           idA,
           idB,
           label,
