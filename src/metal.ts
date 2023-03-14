@@ -50,7 +50,7 @@ class MetalSDK {
     return data;
   }
 
-  async search(payload: SearchPayload, appId?: string, includeFullDocument?: boolean): Promise<object[]> {
+  async search(payload: SearchPayload, appId?: string, idsOnly?: boolean): Promise<object[]> {
     const app = appId || this.appId;
     if (!app) {
       throw new Error('appId required');
@@ -72,8 +72,8 @@ class MetalSDK {
 
     let url = `${API_URL}/v1/search`
 
-    if (includeFullDocument) {
-      url += '?includeDoc=true'
+    if (idsOnly) {
+      url += '?idsOnly=true'
     }
 
     const { data } = await axios.post(url, body, {
