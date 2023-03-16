@@ -49,8 +49,8 @@ import Metal from '@getmetal/metal-sdk';
 const metal = new Metal('api-key', 'client-id', 'app-id');
 
 // Tune to decrease distance
-await metal.tune('id-a', 'id-b', 1);
+await metal.tune({ idA: 'id-a', idB: 'id-b', label: 1 });
 
 // Tune to increase distance
-await metal.tune('id-a', 'id-b', -1);
+await metal.tune({ idA: 'id-a', idB: 'id-b', label: -1 });
 ```
