@@ -1,6 +1,13 @@
 import axios from 'axios';
 import { API_URL } from './constants';
-import { IndexPayload, SearchPayload, TuningPayload } from './types';
+import {
+  type IndexInput,
+  type IndexPayload,
+  type SearchInput,
+  type SearchPayload,
+  type TuningInput,
+  type TuningPayload,
+} from './types';
 
 class MetalSDK {
   apiKey: string;
@@ -13,18 +20,18 @@ class MetalSDK {
     this.clientId = clientId;
   }
 
-  async index(payload: IndexPayload, appId?: string): Promise<object> {
-    const app = appId || this.appId;
+  async index(payload: IndexInput, appId?: string): Promise<object> {
+    const app = appId ?? this.appId;
     if (!app) {
       throw new Error('appId required');
     }
 
     const { imageBase64, imageUrl, text, embedding } = payload;
-    if (!imageBase64 && !imageUrl && !text && !embedding) {
+    if (!imageBase64 && !imageUrl && !text && embedding == null) {
       throw new Error('payload required');
     }
 
-    const body = { app } as IndexPayload;
+    const body: IndexPayload = { app };
     if (payload?.id) {
       body.id = payload.id;
     }
@@ -35,7 +42,7 @@ class MetalSDK {
       body.imageUrl = imageUrl;
     } else if (text) {
       body.text = text;
-    } else if (embedding) {
+    } else if (embedding != null) {
       body.embedding = embedding;
     }
 
@@ -50,8 +57,13 @@ class MetalSDK {
     return data;
   }
 
-  async search(payload: SearchPayload, appId?: string, idsOnly?: boolean): Promise<object[]> {
-    const app = appId || this.appId;
+  async search(
+    payload: SearchInput,
+    appId?: string,
+    idsOnly?: boolean,
+    limit: number = 1
+  ): Promise<object[]> {
+    const app = appId ?? this.appId;
     if (!app) {
       throw new Error('appId required');
     }
@@ -61,7 +73,7 @@ class MetalSDK {
       throw new Error('payload required');
     }
 
-    const body = { app } as SearchPayload;
+    const body: SearchPayload = { app };
     if (imageBase64) {
       body.imageBase64 = imageBase64;
     } else if (imageUrl) {
@@ -70,10 +82,10 @@ class MetalSDK {
       body.text = text;
     }
 
-    let url = `${API_URL}/v1/search`
+    let url = `${API_URL}/v1/search?limit=${limit}`;
 
     if (idsOnly) {
-      url += '?idsOnly=true'
+      url += '&idsOnly=true';
     }
 
     const { data } = await axios.post(url, body, {
@@ -87,17 +99,17 @@ class MetalSDK {
     return data;
   }
 
-  async tune(payload: TuningPayload, appId?: string): Promise<object> {
-    const app = appId || this.appId;
+  async tune(payload: TuningInput, appId?: string): Promise<object> {
+    const app = appId ?? this.appId;
     if (!app) {
       throw new Error('appId required');
     }
 
-    if (!payload.idA || !payload.idB || !payload.label) {
+    if (!payload.idA || !payload.idB || Number.isNaN(payload.label)) {
       throw new Error('idA, idB, & label required for payload');
     }
 
-    const body = { app, ...payload } as TuningPayload;
+    const body: TuningPayload = { app, ...payload };
 
     const { data } = await axios.post(`${API_URL}/v1/tune`, body, {
       headers: {

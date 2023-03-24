@@ -3,7 +3,10 @@
   "version": "1.0.12",
   "description": "Metal SDK",
   "scripts": {
+    "format": "prettier --write .",
     "prepare": "npm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build": "tsc",
     "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts",
     "publish": "npm publish  --access public"

@@ -1,7 +1,8 @@
-const { default: axios } = require('axios');
 import MetalSDK from '../src/metal';
+import axios from 'axios';
 
 jest.mock('axios');
+const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 const API_KEY = 'api-key';
 const CLIENT_ID = 'client-id';
@@ -44,17 +45,17 @@ describe('MetalSDK', () => {
 
     it('should send imageBase64 payload', async () => {
       const appId = 'app-id';
-      const base_64 = 'base64';
+      const base64 = 'base64';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.index({ imageBase64: base_64 });
+      await metal.index({ imageBase64: base64 });
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          imageBase64: base_64,
+          imageBase64: base64,
           app: appId,
         },
         AXIOS_OPTS
@@ -66,9 +67,9 @@ describe('MetalSDK', () => {
       const imageUrl = 'image.png';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.index({ imageUrl });
+      await metal.index({ imageUrl });
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
@@ -85,9 +86,9 @@ describe('MetalSDK', () => {
       const text = 'text-to-index';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.index({ text });
+      await metal.index({ text });
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
@@ -104,9 +105,9 @@ describe('MetalSDK', () => {
       const embedding = [1, 2, 3];
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.index({ embedding });
+      await metal.index({ embedding });
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
@@ -134,17 +135,17 @@ describe('MetalSDK', () => {
 
     it('should send imageBase64 payload', async () => {
       const appId = 'app-id';
-      const base_64 = 'base64';
+      const base64 = 'base64';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.search({ imageBase64: base_64 });
+      await metal.search({ imageBase64: base64 });
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search',
+        'https://api.getmetal.io/v1/search?limit=1',
         {
-          imageBase64: base_64,
+          imageBase64: base64,
           app: appId,
         },
         AXIOS_OPTS
@@ -156,12 +157,12 @@ describe('MetalSDK', () => {
       const imageUrl = 'image.png';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.search({ imageUrl });
+      await metal.search({ imageUrl });
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search',
+        'https://api.getmetal.io/v1/search?limit=1',
         {
           imageUrl,
           app: appId,
@@ -175,12 +176,12 @@ describe('MetalSDK', () => {
       const text = 'text-to-search';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.search({ text });
+      await metal.search({ text });
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search',
+        'https://api.getmetal.io/v1/search?limit=1',
         {
           text,
           app: appId,
@@ -194,12 +195,12 @@ describe('MetalSDK', () => {
       const text = 'text-to-search';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
-      const result = await metal.search({ text }, undefined, true);
+      await metal.search({ text }, undefined, true, 10);
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?idsOnly=true',
+        'https://api.getmetal.io/v1/search?limit=10&idsOnly=true',
         {
           text,
           app: appId,
@@ -218,7 +219,7 @@ describe('MetalSDK', () => {
 
     it('should error without payload', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id');
-      // @ts-ignore
+      // @ts-expect-error testing
       const result = metal.tune({});
       await expect(result).rejects.toThrowError('idA, idB, & label required for payload');
     });
@@ -227,13 +228,13 @@ describe('MetalSDK', () => {
       const appId = 'app-id';
       const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
 
-      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+      mockedAxios.post.mockResolvedValue({ data: null });
 
       const idA = 'id-a';
       const idB = 'id-b';
       const label = 1;
 
-      const result = await metal.tune({ idA, idB, label });
+      await metal.tune({ idA, idB, label });
 
       expect(axios.post).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/tune`,

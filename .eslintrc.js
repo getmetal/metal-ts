@@ -1,17 +1,17 @@
 module.exports = {
-  "env": {
-    "browser": true,
-    "es2021": true
+  env: {
+    browser: true,
+    es2021: true,
   },
-  "extends": [
-    "standard-with-typescript",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
-  ],
-  "overrides": [],
-  "parserOptions": {
-    "ecmaVersion": "latest",
-    "sourceType": "module"
+  extends: ['standard-with-typescript', 'prettier'],
+  overrides: [],
+  parserOptions: {
+    ecmaVersion: 'latest',
+    sourceType: 'module',
+    project: './tsconfig.json',
   },
-  "rules": {}
-}
+  rules: {
+    '@typescript-eslint/strict-boolean-expressions': 0
+  },
+  ignorePatterns: ['dist/*'],
+};
