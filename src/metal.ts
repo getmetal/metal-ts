@@ -1,42 +1,49 @@
-import axios from 'axios';
-import { API_URL } from './constants';
-import { IndexPayload, SearchPayload, TuningPayload } from './types';
+import axios from 'axios'
+import { API_URL } from './constants'
+import {
+  type IndexInput,
+  type IndexPayload,
+  type SearchInput,
+  type SearchPayload,
+  type TuningInput,
+  type TuningPayload,
+} from './types'
 
 class MetalSDK {
-  apiKey: string;
-  appId?: string;
-  clientId: string;
+  apiKey: string
+  appId?: string
+  clientId: string
 
   constructor(apiKey: string, clientId: string, appId?: string) {
-    this.apiKey = apiKey;
-    this.appId = appId;
-    this.clientId = clientId;
+    this.apiKey = apiKey
+    this.appId = appId
+    this.clientId = clientId
   }
 
-  async index(payload: IndexPayload, appId?: string): Promise<object> {
-    const app = appId || this.appId;
+  async index(payload: IndexInput, appId?: string): Promise<object> {
+    const app = appId ?? this.appId
     if (!app) {
-      throw new Error('appId required');
+      throw new Error('appId required')
     }
 
-    const { imageBase64, imageUrl, text, embedding } = payload;
-    if (!imageBase64 && !imageUrl && !text && !embedding) {
-      throw new Error('payload required');
+    const { imageBase64, imageUrl, text, embedding } = payload
+    if (!imageBase64 && !imageUrl && !text && embedding == null) {
+      throw new Error('payload required')
     }
 
-    const body = { app } as IndexPayload;
+    const body: IndexPayload = { app }
     if (payload?.id) {
-      body.id = payload.id;
+      body.id = payload.id
     }
 
     if (imageBase64) {
-      body.imageBase64 = imageBase64;
+      body.imageBase64 = imageBase64
     } else if (imageUrl) {
-      body.imageUrl = imageUrl;
+      body.imageUrl = imageUrl
     } else if (text) {
-      body.text = text;
-    } else if (embedding) {
-      body.embedding = embedding;
+      body.text = text
+    } else if (embedding != null) {
+      body.embedding = embedding
     }
 
     const { data } = await axios.post(`${API_URL}/v1/index`, body, {
@@ -45,35 +52,40 @@ class MetalSDK {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
 
-  async search(payload: SearchPayload, appId?: string, idsOnly?: boolean): Promise<object[]> {
-    const app = appId || this.appId;
+  async search(
+    payload: SearchInput,
+    appId?: string,
+    idsOnly?: boolean,
+    limit: number = 1
+  ): Promise<object[]> {
+    const app = appId ?? this.appId
     if (!app) {
-      throw new Error('appId required');
+      throw new Error('appId required')
     }
 
-    const { imageBase64, imageUrl, text } = payload;
+    const { imageBase64, imageUrl, text } = payload
     if (!imageBase64 && !imageUrl && !text) {
-      throw new Error('payload required');
+      throw new Error('payload required')
     }
 
-    const body = { app } as SearchPayload;
+    const body: SearchPayload = { app }
     if (imageBase64) {
-      body.imageBase64 = imageBase64;
+      body.imageBase64 = imageBase64
     } else if (imageUrl) {
-      body.imageUrl = imageUrl;
+      body.imageUrl = imageUrl
     } else if (text) {
-      body.text = text;
+      body.text = text
     }
 
-    let url = `${API_URL}/v1/search`
+    let url = `${API_URL}/v1/search?limit=${limit}`
 
     if (idsOnly) {
-      url += '?idsOnly=true'
+      url += '&idsOnly=true'
     }
 
     const { data } = await axios.post(url, body, {
@@ -82,22 +94,22 @@ class MetalSDK {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
 
-  async tune(payload: TuningPayload, appId?: string): Promise<object> {
-    const app = appId || this.appId;
+  async tune(payload: TuningInput, appId?: string): Promise<object> {
+    const app = appId ?? this.appId
     if (!app) {
-      throw new Error('appId required');
+      throw new Error('appId required')
     }
 
-    if (!payload.idA || !payload.idB || !payload.label) {
-      throw new Error('idA, idB, & label required for payload');
+    if (!payload.idA || !payload.idB || Number.isNaN(payload.label)) {
+      throw new Error('idA, idB, & label required for payload')
     }
 
-    const body = { app, ...payload } as TuningPayload;
+    const body: TuningPayload = { app, ...payload }
 
     const { data } = await axios.post(`${API_URL}/v1/tune`, body, {
       headers: {
@@ -105,10 +117,10 @@ class MetalSDK {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
 }
 
-export default MetalSDK;
+export default MetalSDK
