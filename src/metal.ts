@@ -122,12 +122,7 @@ class MetalSDK {
     return data
   }
 
-  async getOne(id: string, appId?: string): Promise<object> {
-    const app = appId ?? this.appId
-    if (!app) {
-      throw new Error('appId required')
-    }
-
+  async getOne(id: string): Promise<object> {
     if (!id) {
       throw new Error('id required')
     }
