@@ -121,6 +121,27 @@ class MetalSDK {
 
     return data
   }
+
+  async getOne(id: string, appId?: string): Promise<object> {
+    const app = appId ?? this.appId
+    if (!app) {
+      throw new Error('appId required')
+    }
+
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const { data } = await axios.get(`${API_URL}/v1/documents/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
 }
 
 export default MetalSDK
