@@ -137,6 +137,22 @@ class MetalSDK {
 
     return data
   }
+
+  async deleteOne(id: string): Promise<object> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const { data } = await axios.delete(`${API_URL}/v1/documents/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
 }
 
 export default MetalSDK
