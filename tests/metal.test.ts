@@ -248,4 +248,28 @@ describe('MetalSDK', () => {
       )
     })
   })
+
+  describe('getOne()', () => {
+    it('should error without `id`', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      // @ts-expect-error testing
+      const result = metal.getOne()
+      await expect(result).rejects.toThrowError('id required')
+    })
+
+    it('should get one by id', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+      mockedAxios.get.mockResolvedValue({
+        data: { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
+      })
+
+      await metal.getOne('megadeth')
+
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/documents/megadeth`,
+        AXIOS_OPTS
+      )
+    })
+  })
 })
