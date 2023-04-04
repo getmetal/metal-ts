@@ -272,4 +272,28 @@ describe('MetalSDK', () => {
       )
     })
   })
+
+  describe('deleteOne()', () => {
+    it('should error without `id`', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      // @ts-expect-error testing
+      const result = metal.deleteOne()
+      await expect(result).rejects.toThrowError('id required')
+    })
+
+    it('should get one by id', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+      mockedAxios.delete.mockResolvedValue({
+        data: null,
+      })
+
+      await metal.deleteOne('megadeth')
+
+      expect(axios.delete).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/documents/megadeth`,
+        AXIOS_OPTS
+      )
+    })
+  })
 })
