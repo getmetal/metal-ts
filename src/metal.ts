@@ -19,12 +19,16 @@ class MetalSDK {
       throw new Error('appId required');
     }
 
-    const { imageBase64, imageUrl, text, embedding } = payload;
+    const { imageBase64, imageUrl, text, embedding, metadata } = payload;
     if (!imageBase64 && !imageUrl && !text && !embedding) {
       throw new Error('payload required');
     }
 
     const body = { app } as IndexPayload;
+    if (metadata) {
+      body.metadata = metadata;
+    }
+
     if (imageBase64) {
       body.imageBase64 = imageBase64;
     } else if (imageUrl) {

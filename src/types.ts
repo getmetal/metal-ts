@@ -3,6 +3,7 @@ export interface IndexPayload {
   imageUrl?: string;
   text?: string;
   embedding?: Array<number>;
+  metadata?: object;
 }
 
 export interface SearchPayload {

@@ -99,6 +99,30 @@ describe('MetalSDK', () => {
       );
     });
 
+    it('should send metadata payload', async () => {
+      const appId = 'app-id';
+      const text = 'text-to-index';
+      const metadata = {
+        key: 'value',
+      };
+
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId);
+
+      axios.post = jest.fn(() => Promise.resolve({ data: null }));
+
+      const result = await metal.index({ metadata, text });
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/index',
+        {
+          metadata,
+          text,
+          app: appId,
+        },
+        AXIOS_OPTS
+      );
+    });
+
     it('should send embedding payload', async () => {
       const appId = 'app-id';
       const embedding = [1, 2, 3];
