@@ -36,6 +36,10 @@ class MetalSDK {
       body.id = payload.id
     }
 
+    if (payload?.metadata) {
+      body.metadata = payload.metadata
+    }
+
     if (imageBase64) {
       body.imageBase64 = imageBase64
     } else if (imageUrl) {
