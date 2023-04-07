@@ -1,9 +1,13 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "1.0.10",
+  "version": "1.0.15",
   "description": "Metal SDK",
   "scripts": {
+    "prettier": "prettier -c .",
+    "format": "prettier -w .",
     "prepare": "npm run build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "build": "tsc",
     "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts",
     "publish": "npm publish  --access public"
