@@ -4,6 +4,7 @@ export interface IndexInput {
   imageUrl?: string
   text?: string
   embedding?: number[]
+  metadata?: object
 }
 
 export interface IndexPayload extends IndexInput {
