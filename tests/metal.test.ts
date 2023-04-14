@@ -21,32 +21,32 @@ describe('MetalSDK', () => {
   })
 
   it('should instantiate properly', () => {
-    const appId = 'app-id'
+    const indexId = 'index-id'
 
-    const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+    const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
     expect(metal.apiKey).toBe(API_KEY)
-    expect(metal.appId).toBe(appId)
+    expect(metal.indexId).toBe(indexId)
     expect(metal.clientId).toBe(CLIENT_ID)
   })
 
   describe('index()', () => {
-    it('should error without appId', async () => {
+    it('should error without indexId', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
       const result = metal.index({})
-      await expect(result).rejects.toThrowError('appId required')
+      await expect(result).rejects.toThrowError('indexId required')
     })
 
     it('should error without payload', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       const result = metal.index({})
       await expect(result).rejects.toThrowError('payload required')
     })
 
     it('should send imageBase64 payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const base64 = 'base64'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -56,16 +56,16 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/index',
         {
           imageBase64: base64,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send imageUrl payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const imageUrl = 'image.png'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -75,16 +75,16 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/index',
         {
           imageUrl,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send text payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const text = 'text-to-index'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -94,18 +94,18 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/index',
         {
           text,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send metadata payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const text = 'text-to-index'
       const metadata = { foo: 'bar' }
 
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -116,16 +116,16 @@ describe('MetalSDK', () => {
         {
           metadata,
           text,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send embedding payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const embedding = [1, 2, 3]
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -135,7 +135,7 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/index',
         {
           embedding,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
@@ -143,22 +143,22 @@ describe('MetalSDK', () => {
   })
 
   describe('search()', () => {
-    it('should error without appId', async () => {
+    it('should error without indexId', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
       const result = metal.search({})
-      await expect(result).rejects.toThrowError('appId required')
+      await expect(result).rejects.toThrowError('indexId required')
     })
 
     it('should error without payload', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       const result = metal.search({})
       await expect(result).rejects.toThrowError('payload required')
     })
 
     it('should send imageBase64 payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const base64 = 'base64'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -168,16 +168,16 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/search?limit=1',
         {
           imageBase64: base64,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send imageUrl payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const imageUrl = 'image.png'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -187,16 +187,16 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/search?limit=1',
         {
           imageUrl,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should send text payload', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const text = 'text-to-search'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -206,16 +206,16 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/search?limit=1',
         {
           text,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
     })
 
     it('should add idsOnly=true querystring', async () => {
-      const appId = 'app-id'
+      const indexId = 'index-id'
       const text = 'text-to-search'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -225,7 +225,7 @@ describe('MetalSDK', () => {
         'https://api.getmetal.io/v1/search?limit=10&idsOnly=true',
         {
           text,
-          app: appId,
+          index: indexId,
         },
         AXIOS_OPTS
       )
@@ -233,22 +233,22 @@ describe('MetalSDK', () => {
   })
 
   describe('tune()', () => {
-    it('should error without appId', async () => {
+    it('should error without indexId', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
       const result = metal.tune({ idA: 'a', idB: 'b', label: 1 })
-      await expect(result).rejects.toThrowError('appId required')
+      await expect(result).rejects.toThrowError('indexId required')
     })
 
     it('should error without payload', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       // @ts-expect-error testing
       const result = metal.tune({})
       await expect(result).rejects.toThrowError('idA, idB, & label required for payload')
     })
 
     it('should send with payload', async () => {
-      const appId = 'app-id'
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, appId)
+      const indexId = 'index-id'
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
@@ -261,7 +261,7 @@ describe('MetalSDK', () => {
       expect(axios.post).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/tune`,
         {
-          app: appId,
+          index: indexId,
           idA,
           idB,
           label,
@@ -273,7 +273,7 @@ describe('MetalSDK', () => {
 
   describe('getOne()', () => {
     it('should error without `id`', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       // @ts-expect-error testing
       const result = metal.getOne()
       await expect(result).rejects.toThrowError('id required')
@@ -297,7 +297,7 @@ describe('MetalSDK', () => {
 
   describe('deleteOne()', () => {
     it('should error without `id`', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'app-id')
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       // @ts-expect-error testing
       const result = metal.deleteOne()
       await expect(result).rejects.toThrowError('id required')
