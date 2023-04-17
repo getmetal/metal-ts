@@ -11,19 +11,19 @@ import {
 
 class MetalSDK {
   apiKey: string
-  appId?: string
+  indexId?: string
   clientId: string
 
-  constructor(apiKey: string, clientId: string, appId?: string) {
+  constructor(apiKey: string, clientId: string, indexId?: string) {
     this.apiKey = apiKey
-    this.appId = appId
+    this.indexId = indexId
     this.clientId = clientId
   }
 
-  async index(payload: IndexInput, appId?: string): Promise<object> {
-    const app = appId ?? this.appId
-    if (!app) {
-      throw new Error('appId required')
+  async index(payload: IndexInput, indexId?: string): Promise<object> {
+    const index = indexId ?? this.indexId
+    if (!index) {
+      throw new Error('indexId required')
     }
 
     const { imageBase64, imageUrl, text, embedding } = payload
@@ -31,7 +31,7 @@ class MetalSDK {
       throw new Error('payload required')
     }
 
-    const body: IndexPayload = { app }
+    const body: IndexPayload = { index }
     if (payload?.id) {
       body.id = payload.id
     }
@@ -63,13 +63,14 @@ class MetalSDK {
 
   async search(
     payload: SearchInput,
-    appId?: string,
+    indexId?: string,
     idsOnly?: boolean,
     limit: number = 1
   ): Promise<object[]> {
-    const app = appId ?? this.appId
-    if (!app) {
-      throw new Error('appId required')
+    const index = indexId ?? this.indexId
+
+    if (!index) {
+      throw new Error('indexId required')
     }
 
     const { imageBase64, imageUrl, text } = payload
@@ -77,7 +78,7 @@ class MetalSDK {
       throw new Error('payload required')
     }
 
-    const body: SearchPayload = { app }
+    const body: SearchPayload = { index }
     if (imageBase64) {
       body.imageBase64 = imageBase64
     } else if (imageUrl) {
@@ -103,17 +104,17 @@ class MetalSDK {
     return data
   }
 
-  async tune(payload: TuningInput, appId?: string): Promise<object> {
-    const app = appId ?? this.appId
-    if (!app) {
-      throw new Error('appId required')
+  async tune(payload: TuningInput, indexId?: string): Promise<object> {
+    const index = indexId ?? this.indexId
+    if (!index) {
+      throw new Error('indexId required')
     }
 
     if (!payload.idA || !payload.idB || Number.isNaN(payload.label)) {
       throw new Error('idA, idB, & label required for payload')
     }
 
-    const body: TuningPayload = { app, ...payload }
+    const body: TuningPayload = { index, ...payload }
 
     const { data } = await axios.post(`${API_URL}/v1/tune`, body, {
       headers: {

@@ -8,7 +8,7 @@ export interface IndexInput {
 }
 
 export interface IndexPayload extends IndexInput {
-  app: string
+  index: string
 }
 
 export interface SearchInput {
@@ -19,7 +19,7 @@ export interface SearchInput {
 }
 
 export interface SearchPayload extends SearchInput {
-  app: string
+  index: string
 }
 
 export interface TuningInput {
@@ -29,5 +29,5 @@ export interface TuningInput {
 }
 
 export interface TuningPayload extends TuningInput {
-  app: string
+  index: string
 }
