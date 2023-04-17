@@ -17,7 +17,7 @@
 ```ts
 import Metal from '@getmetal/metal-sdk'
 
-const metal = new Metal('api-key', 'client-id', 'app-id')
+const metal = new Metal('api-key', 'client-id', 'index-id')
 
 // Index Text
 await metal.index({ text: 'text to index' })
@@ -34,7 +34,7 @@ await metal.index({ imageBase64: '<base-64-str>' })
 ```ts
 import Metal from '@getmetal/metal-sdk'
 
-const metal = new Metal('api-key', 'client-id', 'app-id')
+const metal = new Metal('api-key', 'client-id', 'index-id')
 
 // Index Text
 await metal.search({ text: 'search by text' })
@@ -46,7 +46,7 @@ await metal.search({ imageUrl: 'search-by-image.png' })
 ```ts
 import Metal from '@getmetal/metal-sdk'
 
-const metal = new Metal('api-key', 'client-id', 'app-id')
+const metal = new Metal('api-key', 'client-id', 'index-id')
 
 // Tune to decrease distance
 await metal.tune({ idA: 'id-a', idB: 'id-b', label: 1 })

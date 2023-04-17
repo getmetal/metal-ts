@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Metal SDK",
   "scripts": {
     "prettier": "prettier -c .",
@@ -9,8 +9,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "build": "tsc",
-    "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts",
-    "publish": "npm publish  --access public"
+    "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts"
   },
   "license": "Apache 2.0",
   "keywords": [],
