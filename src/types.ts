@@ -11,11 +11,17 @@ export interface IndexPayload extends IndexInput {
   index: string
 }
 
+export interface Filter {
+  field: string
+  value: string | number
+}
+
 export interface SearchInput {
   imageBase64?: string
   imageUrl?: string
   text?: string
   embedding?: number[]
+  filters?: Filter[]
 }
 
 export interface SearchPayload extends SearchInput {
