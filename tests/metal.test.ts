@@ -200,13 +200,14 @@ describe('MetalSDK', () => {
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
-      await metal.search({ text })
+      await metal.search({ text, filters: [{ field: 'favoriteNumber', value: 666 }] })
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=1',
         {
           text,
           index: indexId,
+          filters: [{ field: 'favoriteNumber', value: 666 }],
         },
         AXIOS_OPTS
       )
