@@ -20,14 +20,14 @@ class MetalSDK {
     this.clientId = clientId
   }
 
-  async index(payload: IndexInput, indexId?: string): Promise<object> {
-    const index = indexId ?? this.indexId
+  async index(payload: IndexInput): Promise<object> {
+    const index = payload.indexId ?? this.indexId
     if (!index) {
       throw new Error('indexId required')
     }
 
     const { imageBase64, imageUrl, text, embedding } = payload
-    if (!imageBase64 && !imageUrl && !text && embedding == null) {
+    if (!imageBase64 && !imageUrl && !text && !embedding) {
       throw new Error('payload required')
     }
 
@@ -61,14 +61,8 @@ class MetalSDK {
     return data
   }
 
-  async search(
-    payload: SearchInput,
-    indexId?: string,
-    idsOnly?: boolean,
-    limit: number = 1
-  ): Promise<object[]> {
-    const index = indexId ?? this.indexId
-
+  async search(payload: SearchInput): Promise<object[]> {
+    const index = payload.indexId ?? this.indexId
     if (!index) {
       throw new Error('indexId required')
     }
@@ -87,9 +81,10 @@ class MetalSDK {
       body.text = text
     }
 
+    const limit = payload.limit ?? 10
     let url = `${API_URL}/v1/search?limit=${limit}`
 
-    if (idsOnly) {
+    if (payload.idsOnly) {
       url += '&idsOnly=true'
     }
 
@@ -104,8 +99,8 @@ class MetalSDK {
     return data
   }
 
-  async tune(payload: TuningInput, indexId?: string): Promise<object> {
-    const index = indexId ?? this.indexId
+  async tune(payload: TuningInput): Promise<object> {
+    const index = payload.indexId ?? this.indexId
     if (!index) {
       throw new Error('indexId required')
     }
@@ -160,4 +155,4 @@ class MetalSDK {
   }
 }
 
-export default MetalSDK
+export = MetalSDK

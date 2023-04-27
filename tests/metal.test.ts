@@ -16,6 +16,9 @@ const AXIOS_OPTS = {
 }
 
 describe('MetalSDK', () => {
+  beforeEach(() => {
+    mockedAxios.post.mockClear()
+  })
   it('should be defined', () => {
     expect(MetalSDK).toBeDefined()
   })
@@ -60,6 +63,8 @@ describe('MetalSDK', () => {
         },
         AXIOS_OPTS
       )
+
+      mockedAxios.post.mockClear()
     })
 
     it('should send imageUrl payload', async () => {
@@ -165,7 +170,7 @@ describe('MetalSDK', () => {
       await metal.search({ imageBase64: base64 })
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=1',
+        'https://api.getmetal.io/v1/search?limit=10',
         {
           imageBase64: base64,
           index: indexId,
@@ -184,7 +189,7 @@ describe('MetalSDK', () => {
       await metal.search({ imageUrl })
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=1',
+        'https://api.getmetal.io/v1/search?limit=10',
         {
           imageUrl,
           index: indexId,
@@ -203,7 +208,7 @@ describe('MetalSDK', () => {
       await metal.search({ text, filters: [{ field: 'favoriteNumber', value: 666 }] })
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=1',
+        'https://api.getmetal.io/v1/search?limit=10',
         {
           text,
           index: indexId,
@@ -220,10 +225,10 @@ describe('MetalSDK', () => {
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
-      await metal.search({ text }, undefined, true, 10)
+      await metal.search({ text, idsOnly: true, limit: 100 })
 
       expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=10&idsOnly=true',
+        'https://api.getmetal.io/v1/search?limit=100&idsOnly=true',
         {
           text,
           index: indexId,

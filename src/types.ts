@@ -1,4 +1,5 @@
 export interface IndexInput {
+  indexId?: string
   id?: string
   imageBase64?: string
   imageUrl?: string
@@ -7,8 +8,14 @@ export interface IndexInput {
   metadata?: object
 }
 
-export interface IndexPayload extends IndexInput {
+export interface IndexPayload {
   index: string
+  id?: string
+  imageBase64?: string
+  imageUrl?: string
+  text?: string
+  embedding?: number[]
+  metadata?: object
 }
 
 export interface Filter {
@@ -17,6 +24,18 @@ export interface Filter {
 }
 
 export interface SearchInput {
+  indexId?: string
+  imageBase64?: string
+  imageUrl?: string
+  text?: string
+  embedding?: number[]
+  filters?: Filter[]
+  idsOnly?: boolean
+  limit?: number
+}
+
+export interface SearchPayload {
+  index: string
   imageBase64?: string
   imageUrl?: string
   text?: string
@@ -24,16 +43,16 @@ export interface SearchInput {
   filters?: Filter[]
 }
 
-export interface SearchPayload extends SearchInput {
-  index: string
-}
-
 export interface TuningInput {
+  indexId?: string
   idA: string
   idB: string
   label: -1 | 0 | 1
 }
 
-export interface TuningPayload extends TuningInput {
+export interface TuningPayload {
   index: string
+  idA: string
+  idB: string
+  label: -1 | 0 | 1
 }
