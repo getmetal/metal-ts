@@ -155,7 +155,7 @@ class MetalSDK {
   }
 
   async deleteMany(ids: string[]): Promise<object> {
-    if (!ids || !ids?.length) {
+    if (!ids?.length) {
       throw new Error('ids required')
     }
 
