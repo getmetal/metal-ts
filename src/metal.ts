@@ -153,6 +153,23 @@ class MetalSDK {
 
     return data
   }
+
+  async deleteMany(ids: string[]): Promise<object> {
+    if (!ids || !ids?.length) {
+      throw new Error('ids required')
+    }
+
+    const { data } = await axios.delete(`${API_URL}/v1/documents/bulk`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+      data: { ids },
+    })
+
+    return data
+  }
 }
 
 export = MetalSDK
