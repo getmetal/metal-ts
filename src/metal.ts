@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { API_URL } from './constants'
 import {
+  type Client,
   type IndexInput,
   type IndexPayload,
   type SearchInput,
@@ -9,7 +10,7 @@ import {
   type TuningPayload,
 } from './types'
 
-class MetalSDK {
+class MetalSDK implements Client {
   apiKey: string
   indexId?: string
   clientId: string
