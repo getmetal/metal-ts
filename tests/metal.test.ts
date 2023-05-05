@@ -309,7 +309,7 @@ describe('MetalSDK', () => {
       await expect(result).rejects.toThrowError('id required')
     })
 
-    it('should get one by id', async () => {
+    it('should del one by id', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
 
       mockedAxios.delete.mockResolvedValue({
@@ -321,6 +321,30 @@ describe('MetalSDK', () => {
       expect(axios.delete).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/documents/megadeth`,
         AXIOS_OPTS
+      )
+    })
+  })
+
+  describe('deleteMany()', () => {
+    it('should error without `ids`', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
+      // @ts-expect-error testing
+      const result = metal.deleteMany()
+      await expect(result).rejects.toThrowError('ids required')
+    })
+
+    it('should del one by ids', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+      mockedAxios.delete.mockResolvedValue({
+        data: null,
+      })
+
+      await metal.deleteMany(['megadeth', 'blacksabbath'])
+
+      expect(axios.delete).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/documents/bulk`,
+        { ...AXIOS_OPTS, data: { ids: ['megadeth', 'blacksabbath'] } }
       )
     })
   })
