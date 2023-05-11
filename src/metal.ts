@@ -3,6 +3,7 @@ import { API_URL } from './constants'
 import {
   type IndexInput,
   type IndexPayload,
+  type BulkIndexPayload,
   type SearchInput,
   type SearchPayload,
   type TuningInput,
@@ -51,6 +52,20 @@ class MetalSDK {
     }
 
     const { data } = await axios.post(`${API_URL}/v1/index`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async indexMany(payload: IndexPayload[]): Promise<object> {
+    const body: BulkIndexPayload = { data: payload }
+
+    const { data } = await axios.post(`${API_URL}/v1/index/bulk`, body, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,

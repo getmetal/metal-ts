@@ -147,6 +147,89 @@ describe('MetalSDK', () => {
     })
   })
 
+  describe('indexMany()', () => {
+    it('should send text payload', async () => {
+      const indexId = 'index-id'
+      const text = 'text-to-index'
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
+
+      mockedAxios.post.mockResolvedValue({ data: null })
+
+      await metal.indexMany([{ text, index: indexId }])
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/index/bulk',
+        {
+          data: [
+            {
+              text,
+              index: indexId,
+            },
+          ],
+        },
+        AXIOS_OPTS
+      )
+    })
+
+    it('should send metadata payload', async () => {
+      const indexId = 'index-id'
+      const text = 'text-to-index'
+      const text2 = 'text-to-index2'
+      const metadata = { foo: 'bar' }
+
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
+
+      mockedAxios.post.mockResolvedValue({ data: null })
+
+      await metal.indexMany([
+        { metadata, text, index: indexId },
+        { metadata, text: text2, index: indexId },
+      ])
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/index/bulk',
+        {
+          data: [
+            {
+              metadata,
+              text,
+              index: indexId,
+            },
+            {
+              metadata,
+              text: text2,
+              index: indexId,
+            },
+          ],
+        },
+        AXIOS_OPTS
+      )
+    })
+
+    it('should send embedding payload', async () => {
+      const indexId = 'index-id'
+      const embedding = [1, 2, 3]
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, indexId)
+
+      mockedAxios.post.mockResolvedValue({ data: null })
+
+      await metal.indexMany([{ index: indexId, embedding }])
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/index/bulk',
+        {
+          data: [
+            {
+              embedding,
+              index: indexId,
+            },
+          ],
+        },
+        AXIOS_OPTS
+      )
+    })
+  })
+
   describe('search()', () => {
     it('should error without indexId', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)

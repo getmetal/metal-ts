@@ -18,6 +18,10 @@ export interface IndexPayload {
   metadata?: object
 }
 
+export interface BulkIndexPayload {
+  data: IndexPayload[]
+}
+
 export interface Filter {
   field: string
   value: string | number
