@@ -1,3 +1,11 @@
+export interface Client {
+  index: (payload: IndexInput) => Promise<object>
+  search: (payload: SearchInput) => Promise<object[]>
+  tune: (payload: TuningInput) => Promise<object>
+  getOne: (id: string) => Promise<object>
+  deleteOne: (id: string) => Promise<object>
+}
+
 export interface IndexInput {
   indexId?: string
   id?: string
