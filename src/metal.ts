@@ -4,6 +4,7 @@ import {
   type Client,
   type IndexInput,
   type IndexPayload,
+  type BulkIndexPayload,
   type SearchInput,
   type SearchPayload,
   type TuningInput,
@@ -59,7 +60,21 @@ class MetalSDK implements Client {
       },
     })
 
-    return data
+    return data?.data ?? data
+  }
+
+  async indexMany(payload: IndexPayload[]): Promise<object> {
+    const body: BulkIndexPayload = { data: payload }
+
+    const { data } = await axios.post(`${API_URL}/v1/index/bulk`, body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data?.data ?? data
   }
 
   async search(payload: SearchInput): Promise<object[]> {
@@ -97,7 +112,7 @@ class MetalSDK implements Client {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async tune(payload: TuningInput): Promise<object> {
@@ -120,7 +135,7 @@ class MetalSDK implements Client {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async getOne(id: string): Promise<object> {
@@ -136,7 +151,7 @@ class MetalSDK implements Client {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async deleteOne(id: string): Promise<object> {
@@ -152,7 +167,24 @@ class MetalSDK implements Client {
       },
     })
 
-    return data
+    return data?.data ?? data
+  }
+
+  async deleteMany(ids: string[]): Promise<object> {
+    if (!ids?.length) {
+      throw new Error('ids required')
+    }
+
+    const { data } = await axios.delete(`${API_URL}/v1/documents/bulk`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+      data: { ids },
+    })
+
+    return data?.data ?? data
   }
 }
 
