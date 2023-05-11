@@ -59,7 +59,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async indexMany(payload: IndexPayload[]): Promise<object> {
@@ -73,7 +73,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async search(payload: SearchInput): Promise<object[]> {
@@ -111,7 +111,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async tune(payload: TuningInput): Promise<object> {
@@ -134,7 +134,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async getOne(id: string): Promise<object> {
@@ -150,7 +150,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async deleteOne(id: string): Promise<object> {
@@ -166,7 +166,7 @@ class MetalSDK {
       },
     })
 
-    return data
+    return data?.data ?? data
   }
 
   async deleteMany(ids: string[]): Promise<object> {
@@ -183,7 +183,7 @@ class MetalSDK {
       data: { ids },
     })
 
-    return data
+    return data?.data ?? data
   }
 }
 
