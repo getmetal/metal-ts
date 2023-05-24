@@ -22,7 +22,7 @@ class Motorhead implements MotorheadClient {
   }
 
   async addMemory(sessionId: string, payload: Memory): Promise<Memory> {
-    const { data } = await axios.post(`${MANAGED_BASE_URL}/sessions/${sessionId}/memory`, payload, {
+    const { data } = await axios.post(`${this.baseUrl}/sessions/${sessionId}/memory`, payload, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -35,7 +35,7 @@ class Motorhead implements MotorheadClient {
   }
 
   async getMemory(sessionId: string): Promise<Memory> {
-    const { data } = await axios.get(`${MANAGED_BASE_URL}/sessions/${sessionId}/memory`, {
+    const { data } = await axios.get(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -48,7 +48,7 @@ class Motorhead implements MotorheadClient {
   }
 
   async deleteMemory(sessionId: string): Promise<void> {
-    const { data } = await axios.delete(`${MANAGED_BASE_URL}/sessions/${sessionId}/memory`, {
+    const { data } = await axios.delete(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
