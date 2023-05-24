@@ -1,4 +1,4 @@
-import MetalSDK from '../src/metal'
+import MetalSDK from '../src/index'
 import axios from 'axios'
 
 jest.mock('axios')

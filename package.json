@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "Metal SDK",
   "scripts": {
     "prettier": "prettier -c .",
@@ -21,8 +21,8 @@
   "files": [
     "dist"
   ],
-  "main": "dist/src/metal.js",
-  "types": "dist/src/metal.d.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/types.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",
