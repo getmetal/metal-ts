@@ -13,10 +13,10 @@ export interface MotorheadConfig {
 }
 
 export interface Memory {
-  messages: {
+  messages: Array<{
     content: string
     role: 'Human' | 'AI'
-  }[]
+  }>
   context?: string
 }
 

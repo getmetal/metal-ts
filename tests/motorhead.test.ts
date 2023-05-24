@@ -1,6 +1,6 @@
 import axios from 'axios'
 import Motorhead from '../src/motorhead'
-import { Memory } from '../src/types'
+import { type Memory } from '../src/types'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -44,6 +44,7 @@ describe('Motorhead', () => {
 
   it('should error without apiKey for managed', async () => {
     expect(() => {
+      // eslint-disable-next-line no-new
       new Motorhead({ clientId: CLIENT_ID })
     }).toThrowError(
       'apiKey and clientId required for managed motorhead'
@@ -52,6 +53,7 @@ describe('Motorhead', () => {
 
   it('should error without clientId for managed', async () => {
     expect(() => {
+      // eslint-disable-next-line no-new
       new Motorhead({ apiKey: API_KEY })
     }).toThrowError(
       'apiKey and clientId required for managed motorhead'
@@ -133,9 +135,8 @@ describe('Motorhead', () => {
 
       mockedAxios.delete.mockResolvedValue({ data: null })
 
-      const res = await motorhead.deleteMemory(MOCK_SESSION)
+      await motorhead.deleteMemory(MOCK_SESSION)
 
-      expect(res).toEqual(null)
       expect(axios.delete).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
         AXIOS_MANAGED_OPTS
@@ -148,9 +149,8 @@ describe('Motorhead', () => {
 
       mockedAxios.delete.mockResolvedValue({ data: null })
 
-      const res = await motorhead.deleteMemory(MOCK_SESSION)
+      await motorhead.deleteMemory(MOCK_SESSION)
 
-      expect(res).toEqual(null)
       expect(axios.delete).toHaveBeenCalledWith(
         `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
         AXIOS_NON_MANAGED_OPTS
