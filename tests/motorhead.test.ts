@@ -7,12 +7,19 @@ const mockedAxios = axios as jest.Mocked<typeof axios>
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
+const BASE_URL = 'https://google.com'
 
-const AXIOS_OPTS = {
+const AXIOS_MANAGED_OPTS = {
   headers: {
     'Content-Type': 'application/json',
     'x-metal-api-key': API_KEY,
     'x-metal-client-id': CLIENT_ID,
+  },
+}
+
+const AXIOS_NON_MANAGED_OPTS = {
+  headers: {
+    'Content-Type': 'application/json',
   },
 }
 
@@ -31,14 +38,22 @@ describe('Motorhead', () => {
   })
 
   it('should instantiate (non-managed)', () => {
-    const BASE_URL = 'https://google.com'
     const motorhead = new Motorhead({ baseUrl: BASE_URL })
     expect(motorhead.baseUrl).toBe(BASE_URL)
   })
 
   it('should error without apiKey for managed', async () => {
-    const motorhead = new Motorhead({ clientId: CLIENT_ID })
-    await expect(motorhead).rejects.toThrowError(
+    expect(() => {
+      new Motorhead({ clientId: CLIENT_ID })
+    }).toThrowError(
+      'apiKey and clientId required for managed motorhead'
+    )
+  })
+
+  it('should error without clientId for managed', async () => {
+    expect(() => {
+      new Motorhead({ apiKey: API_KEY })
+    }).toThrowError(
       'apiKey and clientId required for managed motorhead'
     )
   })
@@ -56,7 +71,89 @@ describe('Motorhead', () => {
       expect(axios.post).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
         MOCK_PAYLOAD,
-        AXIOS_OPTS
+        AXIOS_MANAGED_OPTS
+      )
+    })
+
+    it('should send payload for non-managed', async () => {
+      const MOCK_SESSION = 'session-id'
+      const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
+      const motorhead = new Motorhead({ baseUrl: BASE_URL })
+
+      mockedAxios.post.mockResolvedValue({ data: null })
+
+      await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
+
+      expect(axios.post).toHaveBeenCalledWith(
+        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
+        MOCK_PAYLOAD,
+        AXIOS_NON_MANAGED_OPTS
+      )
+    })
+  })
+
+  describe('getMemory()', () => {
+    it('should send payload for managed', async () => {
+      const MOCK_SESSION = 'session-id'
+      const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
+      const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
+
+      mockedAxios.get.mockResolvedValue({ data: MOCK_PAYLOAD })
+
+      const res = await motorhead.getMemory(MOCK_SESSION)
+
+      expect(res).toEqual(MOCK_PAYLOAD)
+      expect(axios.get).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
+        AXIOS_MANAGED_OPTS
+      )
+    })
+
+    it('should send payload for non-managed', async () => {
+      const MOCK_SESSION = 'session-id'
+      const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
+      const motorhead = new Motorhead({ baseUrl: BASE_URL })
+
+      mockedAxios.get.mockResolvedValue({ data: MOCK_PAYLOAD })
+
+      const res = await motorhead.getMemory(MOCK_SESSION)
+
+      expect(res).toEqual(MOCK_PAYLOAD)
+      expect(axios.get).toHaveBeenCalledWith(
+        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
+        AXIOS_NON_MANAGED_OPTS
+      )
+    })
+  })
+
+  describe('deleteMemory()', () => {
+    it('should send payload for managed', async () => {
+      const MOCK_SESSION = 'session-id'
+      const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
+
+      mockedAxios.delete.mockResolvedValue({ data: null })
+
+      const res = await motorhead.deleteMemory(MOCK_SESSION)
+
+      expect(res).toEqual(null)
+      expect(axios.delete).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
+        AXIOS_MANAGED_OPTS
+      )
+    })
+
+    it('should send payload for non-managed', async () => {
+      const MOCK_SESSION = 'session-id'
+      const motorhead = new Motorhead({ baseUrl: BASE_URL })
+
+      mockedAxios.delete.mockResolvedValue({ data: null })
+
+      const res = await motorhead.deleteMemory(MOCK_SESSION)
+
+      expect(res).toEqual(null)
+      expect(axios.delete).toHaveBeenCalledWith(
+        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
+        AXIOS_NON_MANAGED_OPTS
       )
     })
   })
