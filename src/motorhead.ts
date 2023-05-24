@@ -2,7 +2,6 @@ import axios from 'axios'
 import { API_URL } from './constants'
 import { MotorheadClient, MotorheadConfig, Memory } from './types'
 
-
 const MANAGED_BASE_URL = `${API_URL}/v1/motorhead`
 
 class Motorhead implements MotorheadClient {

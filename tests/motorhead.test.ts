@@ -31,19 +31,21 @@ describe('Motorhead', () => {
   })
 
   it('should instantiate (non-managed)', () => {
-    const BASE_URL = 'https://google.com';
+    const BASE_URL = 'https://google.com'
     const motorhead = new Motorhead({ baseUrl: BASE_URL })
     expect(motorhead.baseUrl).toBe(BASE_URL)
   })
 
   it('should error without apiKey for managed', async () => {
     const motorhead = new Motorhead({ clientId: CLIENT_ID })
-    await expect(motorhead).rejects.toThrowError('apiKey and clientId required for managed motorhead')
+    await expect(motorhead).rejects.toThrowError(
+      'apiKey and clientId required for managed motorhead'
+    )
   })
 
   describe('addMemory()', () => {
     it('should send payload for managed', async () => {
-      const MOCK_SESSION = 'session-id';
+      const MOCK_SESSION = 'session-id'
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
