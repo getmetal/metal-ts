@@ -46,18 +46,14 @@ describe('Motorhead', () => {
     expect(() => {
       // eslint-disable-next-line no-new
       new Motorhead({ clientId: CLIENT_ID })
-    }).toThrowError(
-      'apiKey and clientId required for managed motorhead'
-    )
+    }).toThrowError('apiKey and clientId required for managed motorhead')
   })
 
   it('should error without clientId for managed', async () => {
     expect(() => {
       // eslint-disable-next-line no-new
       new Motorhead({ apiKey: API_KEY })
-    }).toThrowError(
-      'apiKey and clientId required for managed motorhead'
-    )
+    }).toThrowError('apiKey and clientId required for managed motorhead')
   })
 
   describe('addMemory()', () => {
