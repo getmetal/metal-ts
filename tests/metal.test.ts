@@ -401,6 +401,13 @@ describe('MetalSDK', () => {
       await expect(result).rejects.toThrowError('id required')
     })
 
+    it('should error without `id`', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID)
+      // @ts-expect-error testing
+      const result = metal.deleteOne()
+      await expect(result).rejects.toThrowError('indexId required')
+    })
+
     it('should del one by id', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
 

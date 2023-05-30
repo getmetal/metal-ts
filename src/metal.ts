@@ -142,6 +142,10 @@ class MetalSDK implements Client {
       throw new Error('id required')
     }
 
+    if (!index) {
+      throw new Error('indexId required')
+    }
+
     const { data } = await axios.get(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -158,6 +162,10 @@ class MetalSDK implements Client {
 
     if (!id) {
       throw new Error('id required')
+    }
+
+    if (!index) {
+      throw new Error('indexId required')
     }
 
     const { data } = await axios.delete(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
