@@ -377,8 +377,15 @@ describe('MetalSDK', () => {
       await expect(result).rejects.toThrowError('id required')
     })
 
-    it('should get one by id', async () => {
+    it('should error without `id`', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
+      // @ts-expect-error testing
+      const result = metal.getOne('megadeth')
+      await expect(result).rejects.toThrowError('indexId required')
+    })
+
+    it('should get one by id', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
 
       mockedAxios.get.mockResolvedValue({
         data: { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
