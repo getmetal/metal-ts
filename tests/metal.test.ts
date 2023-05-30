@@ -402,7 +402,7 @@ describe('MetalSDK', () => {
     })
 
     it('should del one by id', async () => {
-      const metal = new MetalSDK(API_KEY, CLIENT_ID)
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
 
       mockedAxios.delete.mockResolvedValue({
         data: null,
