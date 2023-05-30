@@ -84,9 +84,6 @@ class MetalSDK implements Client {
     }
 
     const { imageBase64, imageUrl, text, filters } = payload
-    if (!imageBase64 && !imageUrl && !text) {
-      throw new Error('payload required')
-    }
 
     const body: SearchPayload = { index, filters }
     if (imageBase64) {
