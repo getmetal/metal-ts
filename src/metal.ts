@@ -135,12 +135,14 @@ class MetalSDK implements Client {
     return data?.data ?? data
   }
 
-  async getOne(id: string): Promise<object> {
+  async getOne(id: string, indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+
     if (!id) {
       throw new Error('id required')
     }
 
-    const { data } = await axios.get(`${API_URL}/v1/documents/${id}`, {
+    const { data } = await axios.get(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -151,12 +153,14 @@ class MetalSDK implements Client {
     return data?.data ?? data
   }
 
-  async deleteOne(id: string): Promise<object> {
+  async deleteOne(id: string, indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+
     if (!id) {
       throw new Error('id required')
     }
 
-    const { data } = await axios.delete(`${API_URL}/v1/documents/${id}`, {
+    const { data } = await axios.delete(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,

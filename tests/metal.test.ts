@@ -387,7 +387,7 @@ describe('MetalSDK', () => {
       await metal.getOne('megadeth')
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/documents/megadeth`,
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
         AXIOS_OPTS
       )
     })
@@ -411,7 +411,7 @@ describe('MetalSDK', () => {
       await metal.deleteOne('megadeth')
 
       expect(axios.delete).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/documents/megadeth`,
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
         AXIOS_OPTS
       )
     })
