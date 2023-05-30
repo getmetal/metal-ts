@@ -241,7 +241,7 @@ describe('MetalSDK', () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
       mockedAxios.post.mockResolvedValue({ data: null })
 
-      await metal.search({})
+      await metal.search()
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
