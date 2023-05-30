@@ -59,4 +59,4 @@ class Motorhead implements MotorheadClient {
   }
 }
 
-export = Motorhead
+export default Motorhead
