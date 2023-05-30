@@ -239,8 +239,17 @@ describe('MetalSDK', () => {
 
     it('should error without payload', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
-      const result = metal.search({})
-      await expect(result).rejects.toThrowError('payload required')
+      mockedAxios.post.mockResolvedValue({ data: null })
+
+      await metal.search()
+
+      expect(axios.post).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/search?limit=10',
+        {
+          index: 'index-id',
+        },
+        AXIOS_OPTS
+      )
     })
 
     it('should send imageBase64 payload', async () => {

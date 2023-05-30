@@ -77,16 +77,13 @@ class MetalSDK implements Client {
     return data?.data ?? data
   }
 
-  async search(payload: SearchInput): Promise<object[]> {
+  async search(payload: SearchInput = {}): Promise<object[]> {
     const index = payload.indexId ?? this.indexId
     if (!index) {
       throw new Error('indexId required')
     }
 
     const { imageBase64, imageUrl, text, filters } = payload
-    if (!imageBase64 && !imageUrl && !text) {
-      throw new Error('payload required')
-    }
 
     const body: SearchPayload = { index, filters }
     if (imageBase64) {
