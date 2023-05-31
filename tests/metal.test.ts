@@ -377,8 +377,14 @@ describe('MetalSDK', () => {
       await expect(result).rejects.toThrowError('id required')
     })
 
-    it('should get one by id', async () => {
+    it('should error without `id`', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
+      const result = metal.getOne('megadeth')
+      await expect(result).rejects.toThrowError('indexId required')
+    })
+
+    it('should get one by id', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
 
       mockedAxios.get.mockResolvedValue({
         data: { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
@@ -387,7 +393,7 @@ describe('MetalSDK', () => {
       await metal.getOne('megadeth')
 
       expect(axios.get).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/documents/megadeth`,
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
         AXIOS_OPTS
       )
     })
@@ -401,8 +407,14 @@ describe('MetalSDK', () => {
       await expect(result).rejects.toThrowError('id required')
     })
 
-    it('should del one by id', async () => {
+    it('should error without `id`', async () => {
       const metal = new MetalSDK(API_KEY, CLIENT_ID)
+      const result = metal.deleteOne('megadeth')
+      await expect(result).rejects.toThrowError('indexId required')
+    })
+
+    it('should del one by id', async () => {
+      const metal = new MetalSDK(API_KEY, CLIENT_ID, 'index-id')
 
       mockedAxios.delete.mockResolvedValue({
         data: null,
@@ -411,7 +423,7 @@ describe('MetalSDK', () => {
       await metal.deleteOne('megadeth')
 
       expect(axios.delete).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/documents/megadeth`,
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
         AXIOS_OPTS
       )
     })
