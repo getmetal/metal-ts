@@ -1,6 +1,7 @@
 import axios from 'axios'
 import mime from 'mime-types'
 import { API_URL, SUPPORTED_FILE_TYPES } from './constants'
+import { sanitizeFilename } from './helpers'
 import {
   type Client,
   type IndexInput,
@@ -207,7 +208,7 @@ class MetalSDK implements Client {
 
     const url = `${API_URL}/v1/indexes/${indexId}/files`
     const body: FilePayload = {
-      fileName,
+      fileName: sanitizeFilename(fileName),
       fileType,
     }
     const headers = {

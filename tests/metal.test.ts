@@ -494,6 +494,44 @@ describe('MetalSDK', () => {
         )
       })
 
+      it('sanitizes file name', async () => {
+        const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+        mockedAxios.put.mockResolvedValue({
+          data: {},
+        })
+
+        mockedAxios.post.mockResolvedValue({
+          data: { url: 'mocked.com/berghain?withquery=true' },
+        })
+
+        const filePath = path.join(__dirname, 'fixtures', '_+$!*badname.csv')
+
+        await metal.uploadFile({ indexId: 'index-id', file: filePath })
+
+        expect(axios.post).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/indexes/index-id/files`,
+          {
+            fileName: '_____badname.csv',
+            fileType: 'text/csv',
+          },
+          {
+            headers: { ...AXIOS_OPTS.headers, 'x-metal-file-size': '14' },
+          }
+        )
+
+        expect(axios.put).toHaveBeenCalledWith(
+          'mocked.com/berghain?withquery=true',
+          expect.anything(),
+          {
+            headers: {
+              'content-length': '14',
+              'content-type': 'text/csv',
+            },
+          }
+        )
+      })
+
       it('takes File object', async () => {
         const metal = new MetalSDK(API_KEY, CLIENT_ID)
 
