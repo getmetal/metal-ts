@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { API_URL } from './constants'
+import mime from 'mime-types'
+import { API_URL, SUPPORTED_FILE_TYPES } from './constants'
 import {
   type Client,
   type IndexInput,
@@ -9,6 +10,11 @@ import {
   type SearchPayload,
   type TuningInput,
   type TuningPayload,
+  type CreateResourcePayload,
+  type FilePayload,
+  type UploadFileToUrlPayload,
+  type UploadFilePayload,
+  type CreateFileResouceResponse,
 } from './types'
 
 class MetalSDK implements Client {
@@ -194,6 +200,67 @@ class MetalSDK implements Client {
     })
 
     return data?.data ?? data
+  }
+
+  private async createResource(payload: CreateResourcePayload): Promise<CreateFileResouceResponse> {
+    const { indexId, fileName, fileType, fileSize } = payload
+
+    const url = `${API_URL}/v1/indexes/${indexId}/files`
+    const body: FilePayload = {
+      fileName,
+      fileType,
+    }
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-metal-file-size': fileSize.toString(),
+      'x-metal-api-key': this.apiKey,
+      'x-metal-client-id': this.clientId,
+    }
+
+    const { data } = await axios.post(url, body, { headers })
+    return data?.data ?? data
+  }
+
+  private async uploadFileToUrl(payload: UploadFileToUrlPayload): Promise<object> {
+    const { url, file, fileType, fileSize } = payload
+
+    const headers = {
+      'content-type': fileType,
+      'content-length': fileSize.toString(),
+    }
+    const { data } = await axios.put(url, file, { headers })
+    return data?.data ?? data
+  }
+
+  async uploadFile(payload: UploadFilePayload): Promise<object> {
+    const { indexId, file } = payload
+
+    let fileType: string
+    let fileSize: number
+    let fileName: string
+    let fileData: File | Buffer
+
+    if (typeof file === 'string') {
+      const fs = await import('fs')
+      const path = await import('path')
+      fileType = mime.lookup(file) || ''
+      fileSize = fs.statSync(file).size
+      fileName = path.basename(file)
+      fileData = fs.readFileSync(file)
+    } else {
+      fileType = file.type || ''
+      fileSize = file.size
+      fileName = file.name
+      fileData = file
+    }
+
+    if (!SUPPORTED_FILE_TYPES.includes(fileType)) {
+      throw new Error('Invalid file type. Supported types are: pdf, docx, csv.')
+    }
+
+    const resource = await this.createResource({ indexId, fileName, fileType, fileSize })
+
+    return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 }
 

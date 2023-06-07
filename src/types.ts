@@ -1,5 +1,4 @@
 // Motorhead Client
-
 export interface MotorheadClient {
   addMemory: (sessionId: string, payload: Memory) => Promise<Memory>
   getMemory: (sessionId: string) => Promise<Memory>
@@ -27,6 +26,9 @@ export interface Client {
   tune: (payload: TuningInput) => Promise<object>
   getOne: (id: string) => Promise<object>
   deleteOne: (id: string) => Promise<object>
+  // createResource: (payload: CreateResourcePayload) => Promise<object>
+  // uploadFileToUrl: (payload: UploadFileToUrlPayload) => Promise<object>
+  uploadFile: (payload: UploadFilePayload) => Promise<object>
 }
 
 export interface IndexInput {
@@ -90,4 +92,32 @@ export interface TuningPayload {
   idA: string
   idB: string
   label: -1 | 0 | 1
+}
+
+export interface CreateResourcePayload {
+  indexId: string
+  fileName: string
+  fileType: string
+  fileSize: number
+}
+
+export interface UploadFileToUrlPayload {
+  url: string
+  file: File | Buffer
+  fileType: string
+  fileSize: number
+}
+
+export interface UploadFilePayload {
+  indexId: string
+  file: File | string
+}
+
+export interface FilePayload {
+  fileName: string
+  fileType: string
+}
+
+export interface CreateFileResouceResponse {
+  url: string
 }

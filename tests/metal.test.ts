@@ -1,5 +1,8 @@
-import MetalSDK from '../src/index'
 import axios from 'axios'
+import path from 'path'
+import { JSDOM } from 'jsdom'
+import fs from 'fs'
+import MetalSDK from '../src/index'
 
 jest.mock('axios')
 const mockedAxios = axios as jest.Mocked<typeof axios>
@@ -449,6 +452,91 @@ describe('MetalSDK', () => {
       expect(axios.delete).toHaveBeenCalledWith(`https://api.getmetal.io/v1/documents/bulk`, {
         ...AXIOS_OPTS,
         data: { ids: ['megadeth', 'blacksabbath'] },
+      })
+    })
+
+    describe('uploadFile()', () => {
+      it('takes path', async () => {
+        const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+        mockedAxios.put.mockResolvedValue({
+          data: {},
+        })
+
+        mockedAxios.post.mockResolvedValue({
+          data: { url: 'mocked.com/berghain?withquery=true' },
+        })
+
+        const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
+
+        await metal.uploadFile({ indexId: 'index-id', file: filePath })
+
+        expect(axios.post).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/indexes/index-id/files`,
+          {
+            fileName: 'sample.csv',
+            fileType: 'text/csv',
+          },
+          {
+            headers: { ...AXIOS_OPTS.headers, 'x-metal-file-size': '43' },
+          }
+        )
+
+        expect(axios.put).toHaveBeenCalledWith(
+          'mocked.com/berghain?withquery=true',
+          expect.anything(),
+          {
+            headers: {
+              'content-length': '43',
+              'content-type': 'text/csv',
+            },
+          }
+        )
+      })
+
+      it('takes File object', async () => {
+        const metal = new MetalSDK(API_KEY, CLIENT_ID)
+
+        mockedAxios.put.mockResolvedValue({
+          data: {},
+        })
+
+        mockedAxios.post.mockResolvedValue({
+          data: { url: 'mocked.com/berghain?withquery=true' },
+        })
+
+        const dom = new JSDOM()
+        const fileContent = fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.csv'))
+        const file = new dom.window.File([fileContent], 'sample.csv', { type: 'text/csv' })
+
+        await metal.uploadFile({ indexId: 'index-id', file })
+
+        expect(mockedAxios.post).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/indexes/index-id/files`,
+          {
+            fileName: 'sample.csv',
+            fileType: 'text/csv',
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'x-metal-api-key': API_KEY,
+              'x-metal-client-id': CLIENT_ID,
+              'x-metal-file-size': '43',
+            },
+          }
+        )
+
+        expect(mockedAxios.put).toHaveBeenCalledWith(
+          'mocked.com/berghain?withquery=true',
+          expect.anything(),
+          {
+            headers: {
+              'content-length': '43',
+              'content-type': 'text/csv',
+            },
+          }
+        )
       })
     })
   })
