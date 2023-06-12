@@ -15,7 +15,7 @@
 ### Indexing
 
 ```ts
-import Metal from '@getmetal/metal-sdk'
+import { Metal } from '@getmetal/metal-sdk'
 
 const metal = new Metal('api-key', 'client-id', 'index-id')
 
@@ -35,7 +35,7 @@ await metal.index({ imageBase64: '<base-64-str>' })
 ### Searching
 
 ```ts
-import Metal from '@getmetal/metal-sdk'
+import { Metal } from '@getmetal/metal-sdk'
 
 const metal = new Metal('api-key', 'client-id', 'index-id')
 
@@ -57,7 +57,7 @@ await metal.search({
 ### Tuning
 
 ```ts
-import Metal from '@getmetal/metal-sdk'
+import { Metal } from '@getmetal/metal-sdk'
 
 const metal = new Metal('api-key', 'client-id', 'index-id')
 
