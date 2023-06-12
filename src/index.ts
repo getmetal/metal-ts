@@ -1,6 +1,4 @@
 import Metal from './metal'
 import Motorhead from './motorhead'
 
-export default Metal
-
-export { Motorhead }
+export { Metal, Motorhead, Metal as Retriever, Motorhead as Memory }
