@@ -1,4 +1,4 @@
-import { Metal } from '../src/index'
+import { Metal } from '../src/metal'
 import axios from 'axios'
 import path from 'path'
 import { JSDOM } from 'jsdom'

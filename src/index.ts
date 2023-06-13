@@ -1,2 +1,2 @@
-export { Metal } from './metal'
-export { Motorhead } from './motorhead'
+export { Metal } from './metal.js'
+export { Motorhead } from './motorhead.js'

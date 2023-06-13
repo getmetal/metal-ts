@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Motorhead } from '../src/index'
+import { Motorhead } from '../src/motorhead'
 import { type Memory } from '../src/types'
 
 jest.mock('axios')
