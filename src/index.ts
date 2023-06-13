@@ -1,2 +1,4 @@
-export { Metal } from './metal'
-export { Motorhead } from './motorhead'
+import Metal from './metal'
+import Motorhead from './motorhead'
+
+export { Metal, Motorhead }
