@@ -18,7 +18,7 @@ import {
   type CreateFileResouceResponse,
 } from './types'
 
-class MetalSDK implements Client {
+export class Metal implements Client {
   apiKey: string
   indexId?: string
   clientId: string
@@ -264,5 +264,3 @@ class MetalSDK implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 }
-
-export = MetalSDK
