@@ -58,3 +58,5 @@ export class Motorhead implements MotorheadClient {
     return data?.data ?? data
   }
 }
+
+export default Motorhead

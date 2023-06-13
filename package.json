@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Metal SDK",
   "scripts": {
     "prettier": "prettier -c .",
@@ -8,7 +8,7 @@
     "prepare": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts"
   },
   "license": "Apache 2.0",
@@ -19,10 +19,11 @@
   },
   "homepage": "https://getmetal.io",
   "files": [
-    "dist"
+    "dist/"
   ],
-  "main": "dist/src/index.js",
-  "types": "dist/src/types.d.ts",
+  "main": "dist/cjs/src/index.js",
+  "module": "dist/esm/src/index.js",
+  "types": "dist/esm/src/types.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",

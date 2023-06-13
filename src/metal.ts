@@ -264,3 +264,5 @@ export class Metal implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 }
+
+export default Metal
