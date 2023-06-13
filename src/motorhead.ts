@@ -4,7 +4,7 @@ import { type MotorheadClient, type MotorheadConfig, type Memory } from './types
 
 const MANAGED_BASE_URL = `${API_URL}/v1/motorhead`
 
-class Motorhead implements MotorheadClient {
+export class Motorhead implements MotorheadClient {
   apiKey?: string
   clientId?: string
   baseUrl: string
@@ -59,4 +59,4 @@ class Motorhead implements MotorheadClient {
   }
 }
 
-export = Motorhead
+export default Motorhead;
