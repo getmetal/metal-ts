@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "5.0.3",
+  "version": "5.0.4",
   "description": "Metal SDK",
   "scripts": {
     "prettier": "prettier -c .",
