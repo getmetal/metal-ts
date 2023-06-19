@@ -23,7 +23,7 @@
   ],
   "main": "dist/cjs/src/index.js",
   "module": "dist/esm/src/index.js",
-  "types": "dist/esm/src/types.d.ts",
+  "types": "dist/esm/src/index.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",
