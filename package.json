@@ -8,7 +8,7 @@
     "prepare": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig-cjs.build.json",
     "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts"
   },
   "license": "Apache 2.0",
