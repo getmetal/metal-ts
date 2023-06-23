@@ -8,7 +8,7 @@
     "prepare": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "build": "tsc -p tsconfig.build.json && tsc -p tsconfig-cjs.build.json",
     "test": "jest \"tests/.*\\.test\\.ts\" --coverage --collectCoverageFrom=src/**/*.ts"
   },
   "license": "Apache 2.0",
@@ -21,9 +21,9 @@
   "files": [
     "dist/"
   ],
-  "main": "dist/cjs/src/index.js",
-  "module": "dist/esm/src/index.js",
-  "types": "dist/esm/src/index.d.ts",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
   "author": "Metal <founders@getmetal.io> (https://getmetal.io/)",
   "devDependencies": {
     "@types/jest": "^29.4.0",
