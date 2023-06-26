@@ -108,10 +108,7 @@ export interface UploadFileToUrlPayload {
   fileSize: number
 }
 
-export interface UploadFilePayload {
-  indexId: string
-  file: File | string
-}
+export type UploadFilePayload = File | string
 
 export interface FilePayload {
   fileName: string
