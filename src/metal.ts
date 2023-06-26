@@ -238,13 +238,11 @@ export class Metal implements Client {
     return data?.data ?? data
   }
 
-  async uploadFile(payload: UploadFilePayload, indexId?: string): Promise<object> {
+  async uploadFile(file: UploadFilePayload, indexId?: string): Promise<object> {
     const index = indexId ?? (this.indexId as string)
     if (!index) {
       throw new Error('indexId required')
     }
-
-    const { file } = payload
 
     let fileType: string
     let fileSize: number

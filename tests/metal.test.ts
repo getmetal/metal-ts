@@ -441,7 +441,7 @@ describe('Metal', () => {
     })
 
     it('should del by ids', async () => {
-      const metal = new Metal(API_KEY, CLIENT_ID)
+      const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
       mockedAxios.delete.mockResolvedValue({
         data: null,
@@ -449,7 +449,7 @@ describe('Metal', () => {
 
       await metal.deleteMany(['megadeth', 'blacksabbath'])
 
-      expect(axios.delete).toHaveBeenCalledWith(`https://api.getmetal.io/v1/documents/bulk`, {
+      expect(axios.delete).toHaveBeenCalledWith(`https://api.getmetal.io/v1/indexes/index-id/documents/bulk`, {
         ...AXIOS_OPTS,
         data: { ids: ['megadeth', 'blacksabbath'] },
       })
