@@ -186,12 +186,17 @@ export class Metal implements Client {
     return data?.data ?? data
   }
 
-  async deleteMany(ids: string[]): Promise<object> {
+  async deleteMany(ids: string[], indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+    if (!index) {
+      throw new Error('indexId required')
+    }
+
     if (!ids?.length) {
       throw new Error('ids required')
     }
 
-    const { data } = await axios.delete(`${API_URL}/v1/documents/bulk`, {
+    const { data } = await axios.delete(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -233,8 +238,13 @@ export class Metal implements Client {
     return data?.data ?? data
   }
 
-  async uploadFile(payload: UploadFilePayload): Promise<object> {
-    const { indexId, file } = payload
+  async uploadFile(payload: UploadFilePayload, indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+    if (!index) {
+      throw new Error('indexId required')
+    }
+
+    const { file } = payload
 
     let fileType: string
     let fileSize: number
@@ -259,7 +269,7 @@ export class Metal implements Client {
       throw new Error('Invalid file type. Supported types are: pdf, docx, csv.')
     }
 
-    const resource = await this.createResource({ indexId, fileName, fileType, fileSize })
+    const resource = await this.createResource({ indexId: index, fileName, fileType, fileSize })
 
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
