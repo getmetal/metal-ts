@@ -457,7 +457,7 @@ describe('Metal', () => {
 
     describe('uploadFile()', () => {
       it('takes path', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID)
+        const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         mockedAxios.put.mockResolvedValue({
           data: {},
@@ -469,7 +469,7 @@ describe('Metal', () => {
 
         const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
 
-        await metal.uploadFile({ indexId: 'index-id', file: filePath })
+        await metal.uploadFile(filePath)
 
         expect(axios.post).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
@@ -495,7 +495,7 @@ describe('Metal', () => {
       })
 
       it('sanitizes file name', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID)
+        const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         mockedAxios.put.mockResolvedValue({
           data: {},
@@ -507,7 +507,7 @@ describe('Metal', () => {
 
         const filePath = path.join(__dirname, 'fixtures', '_+$!*badname.csv')
 
-        await metal.uploadFile({ indexId: 'index-id', file: filePath })
+        await metal.uploadFile(filePath)
 
         expect(axios.post).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
@@ -533,7 +533,7 @@ describe('Metal', () => {
       })
 
       it('takes File object', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID)
+        const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         mockedAxios.put.mockResolvedValue({
           data: {},
@@ -547,7 +547,7 @@ describe('Metal', () => {
         const fileContent = fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.csv'))
         const file = new dom.window.File([fileContent], 'sample.csv', { type: 'text/csv' })
 
-        await metal.uploadFile({ indexId: 'index-id', file })
+        await metal.uploadFile(file)
 
         expect(mockedAxios.post).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
