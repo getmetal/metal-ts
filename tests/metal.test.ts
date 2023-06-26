@@ -449,10 +449,13 @@ describe('Metal', () => {
 
       await metal.deleteMany(['megadeth', 'blacksabbath'])
 
-      expect(axios.delete).toHaveBeenCalledWith(`https://api.getmetal.io/v1/indexes/index-id/documents/bulk`, {
-        ...AXIOS_OPTS,
-        data: { ids: ['megadeth', 'blacksabbath'] },
-      })
+      expect(axios.delete).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/indexes/index-id/documents/bulk`,
+        {
+          ...AXIOS_OPTS,
+          data: { ids: ['megadeth', 'blacksabbath'] },
+        }
+      )
     })
 
     describe('uploadFile()', () => {
