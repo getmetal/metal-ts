@@ -61,20 +61,6 @@ await metal.search({
 })
 ```
 
-### Tuning
-
-```ts
-import { Metal } from '@getmetal/metal-sdk'
-
-const metal = new Metal('api-key', 'client-id', 'index-id')
-
-// Tune to decrease distance
-await metal.tune({ idA: 'id-a', idB: 'id-b', label: 1 })
-
-// Tune to increase distance
-await metal.tune({ idA: 'id-a', idB: 'id-b', label: -1 })
-```
-
 ## Memory Usage
 
 ### Setup
