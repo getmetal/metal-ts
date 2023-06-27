@@ -1,16 +1,23 @@
-# 🤘 Metal TypeScript SDK
+# 🤘 Metal Node SDK
 
 [**Developer Documentation**](https://docs.getmetal.io/sdk-typescript)
 
-## Setup
+## Install
 
 ```bash
-  npm i --save @getmetal/metal-sdk
-
+  npm install @getmetal/metal-sdk
+  # or
   yarn add @getmetal/metal-sdk
 ```
 
-## Usage
+## Retrieval Usage
+
+### Setup
+
+```ts
+import { Metal } from '@getmetal/metal-sdk'
+const metal = new Metal('pk_123', 'ci_123', 'idx_123')
+```
 
 ### Indexing
 
@@ -67,3 +74,36 @@ await metal.tune({ idA: 'id-a', idB: 'id-b', label: 1 })
 // Tune to increase distance
 await metal.tune({ idA: 'id-a', idB: 'id-b', label: -1 })
 ```
+
+## Memory Usage
+
+### Setup
+
+```ts
+import { Motorhead } from '@getmetal/metal-sdk'
+const motor = new Motorhead({ apiKey: 'pk_123', clientId: 'ci_123' })
+```
+
+### Add Memory
+
+```ts
+const memoryPayload = {
+  messages: [
+    { role: 'Human', content: 'Who is the best vocalist of all time?' },
+    { role: 'AI', content: 'Ozzy!' },
+  ],
+  context: 'User ask what can he eat in Colombia. The AI responds arepas are really nice',
+}
+
+await motorhead.addMemory('session-id', memoryPayload)
+```
+
+### Get Memory
+
+```ts
+await motorhead.getMemory('session-id')
+```
+
+---
+
+View the full documentation on [https://docs.getmetal.io/sdks/node](https://docs.getmetal.io/sdks/node)
