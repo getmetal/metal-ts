@@ -300,14 +300,14 @@ describe('Metal', () => {
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
-      await metal.search({ text, filters: [{ field: 'favoriteNumber', value: 666 }] })
+      await metal.search({ text, filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] } })
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
         {
           text,
           index: indexId,
-          filters: [{ field: 'favoriteNumber', value: 666 }],
+          filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
         },
         AXIOS_OPTS
       )
