@@ -300,7 +300,10 @@ describe('Metal', () => {
 
       mockedAxios.post.mockResolvedValue({ data: null })
 
-      await metal.search({ text, filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] } })
+      await metal.search({
+        text,
+        filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
+      })
 
       expect(axios.post).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
