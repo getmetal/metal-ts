@@ -55,9 +55,17 @@ export interface BulkIndexPayload {
   data: IndexPayload[]
 }
 
+export type Operator = 'eq' | 'gt' | 'gte' | 'lt' | 'lte'
+
 export interface Filter {
   field: string
+  operator: Operator
   value: string | number
+}
+
+export interface Filters {
+  and?: Filter[]
+  or?: Filter[]
 }
 
 export interface SearchInput {
@@ -66,7 +74,7 @@ export interface SearchInput {
   imageUrl?: string
   text?: string
   embedding?: number[]
-  filters?: Filter[]
+  filters?: Filters
   idsOnly?: boolean
   limit?: number
 }
@@ -77,7 +85,7 @@ export interface SearchPayload {
   imageUrl?: string
   text?: string
   embedding?: number[]
-  filters?: Filter[]
+  filters?: Filters
 }
 
 export interface TuningInput {
