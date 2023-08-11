@@ -297,13 +297,16 @@ describe('Metal', () => {
 
       await metal.search({ imageBase64: base64 })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
         {
-          imageBase64: base64,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            imageBase64: base64,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -316,13 +319,16 @@ describe('Metal', () => {
 
       await metal.search({ imageUrl })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
         {
-          imageUrl,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            imageUrl,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -338,14 +344,17 @@ describe('Metal', () => {
         filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
       })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
         {
-          text,
-          index: indexId,
-          filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
+          method: 'POST',
+          body: JSON.stringify({
+            text,
+            index: indexId,
+            filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -358,13 +367,16 @@ describe('Metal', () => {
 
       await metal.search({ text, idsOnly: true, limit: 100 })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=100&idsOnly=true',
         {
-          text,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            text,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
   })
@@ -395,15 +407,18 @@ describe('Metal', () => {
 
       await metal.tune({ idA, idB, label })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/tune`,
         {
-          index: indexId,
-          idA,
-          idB,
-          label,
+          method: 'POST',
+          body: JSON.stringify({
+            index: indexId,
+            idA,
+            idB,
+            label,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
   })
@@ -425,15 +440,15 @@ describe('Metal', () => {
     it('should get one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.get.mockResolvedValue({
-        data: { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
-      })
+      fetchMock.mockImplementationOnce(() => getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } }));
 
       await metal.getOne('megadeth')
 
-      expect(axios.get).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
-        AXIOS_OPTS
+        {
+          headers: HEADERS,
+        }
       )
     })
   })
@@ -455,15 +470,17 @@ describe('Metal', () => {
     it('should del one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.delete.mockResolvedValue({
-        data: null,
-      })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
+
 
       await metal.deleteOne('megadeth')
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
-        AXIOS_OPTS
+        {
+          method: 'DELETE',
+          headers: HEADERS,
+        }
       )
     })
   })
@@ -479,17 +496,16 @@ describe('Metal', () => {
     it('should del by ids', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.delete.mockResolvedValue({
-        data: null,
-      })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.deleteMany(['megadeth', 'blacksabbath'])
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/bulk`,
         {
-          ...AXIOS_OPTS,
-          data: { ids: ['megadeth', 'blacksabbath'] },
+          method: 'DELETE',
+          body: JSON.stringify({ ids: ['megadeth', 'blacksabbath'] }),
+          headers: HEADERS,
         }
       )
     })
