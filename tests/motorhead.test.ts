@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { Motorhead } from '../src/index'
 import { type Memory } from '../src/types'
 
