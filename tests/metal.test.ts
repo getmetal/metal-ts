@@ -71,8 +71,8 @@ describe('Metal', () => {
           method: 'POST',
           headers: HEADERS,
           body: JSON.stringify({
-            imageBase64: base64,
             index: indexId,
+            imageBase64: base64,
           }),
         }
       )
@@ -93,8 +93,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            imageUrl,
             index: indexId,
+            imageUrl,
           }),
           headers: HEADERS,
         },
@@ -115,8 +115,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            text,
             index: indexId,
+            text,
           }),
           headers: HEADERS,
         },
@@ -139,9 +139,9 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
+            index: indexId,
             metadata,
             text,
-            index: indexId,
           }),
           headers: HEADERS,
         },
@@ -162,8 +162,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            embedding,
             index: indexId,
+            embedding,
           }),
           headers: HEADERS,
         },
@@ -252,8 +252,8 @@ describe('Metal', () => {
           body: JSON.stringify({
             data: [
               {
-                embedding,
                 index: indexId,
+                embedding,
               },
             ],
           }),
@@ -302,8 +302,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            imageBase64: base64,
             index: indexId,
+            imageBase64: base64,
           }),
           headers: HEADERS,
         },
@@ -324,8 +324,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            imageUrl,
             index: indexId,
+            imageUrl,
           }),
           headers: HEADERS,
         },
@@ -349,9 +349,9 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            text,
             index: indexId,
             filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
+            text,
           }),
           headers: HEADERS,
         },
@@ -372,8 +372,8 @@ describe('Metal', () => {
         {
           method: 'POST',
           body: JSON.stringify({
-            text,
             index: indexId,
+            text,
           }),
           headers: HEADERS,
         },
