@@ -1,27 +1,34 @@
 import { Metal } from '../src/index'
-import axios from 'axios'
 import path from 'path'
 import { JSDOM } from 'jsdom'
 import fs from 'fs'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+
+let fetchMock: any = undefined;
+
+fetchMock = jest.spyOn(global, 'fetch');
+
+const getMockRes = (data: any) => {
+  return Promise.resolve({
+    json: () => Promise.resolve({ data }),
+  })
+};
+
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
 
-const AXIOS_OPTS = {
-  headers: {
-    'Content-Type': 'application/json',
-    'x-metal-api-key': API_KEY,
-    'x-metal-client-id': CLIENT_ID,
-  },
-}
+const HEADERS = {
+  'Content-Type': 'application/json',
+  'x-metal-api-key': API_KEY,
+  'x-metal-client-id': CLIENT_ID,
+};
 
 describe('Metal', () => {
   beforeEach(() => {
-    mockedAxios.post.mockClear()
+    fetchMock.mockClear();
   })
+
   it('should be defined', () => {
     expect(Metal).toBeDefined()
   })
@@ -54,20 +61,22 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.index({ imageBase64: base64 })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          imageBase64: base64,
-          index: indexId,
-        },
-        AXIOS_OPTS
+          method: 'POST',
+          headers: HEADERS,
+          body: JSON.stringify({
+            imageBase64: base64,
+            index: indexId,
+          }),
+        }
       )
 
-      mockedAxios.post.mockClear()
     })
 
     it('should send imageUrl payload', async () => {
@@ -75,17 +84,20 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.index({ imageUrl })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          imageUrl,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            imageUrl,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -94,17 +106,20 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.index({ text })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          text,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            text,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -115,18 +130,21 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.index({ metadata, text })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          metadata,
-          text,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            metadata,
+            text,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -135,17 +153,20 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.index({ embedding })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index',
         {
-          embedding,
-          index: indexId,
+          method: 'POST',
+          body: JSON.stringify({
+            embedding,
+            index: indexId,
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
   })
@@ -156,21 +177,24 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.indexMany([{ text, index: indexId }])
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index/bulk',
         {
-          data: [
-            {
-              text,
-              index: indexId,
-            },
-          ],
-        },
-        AXIOS_OPTS
+          method: 'POST',
+          body: JSON.stringify({
+            data: [
+              {
+                text,
+                index: indexId,
+              },
+            ],
+          }),
+          headers: HEADERS,
+        }
       )
     })
 
@@ -182,30 +206,33 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.indexMany([
         { metadata, text, index: indexId },
         { metadata, text: text2, index: indexId },
       ])
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index/bulk',
         {
-          data: [
-            {
-              metadata,
-              text,
-              index: indexId,
-            },
-            {
-              metadata,
-              text: text2,
-              index: indexId,
-            },
-          ],
+          method: 'POST',
+          body: JSON.stringify({
+            data: [
+              {
+                metadata,
+                text,
+                index: indexId,
+              },
+              {
+                metadata,
+                text: text2,
+                index: indexId,
+              },
+            ],
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -214,21 +241,24 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.indexMany([{ index: indexId, embedding }])
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/index/bulk',
         {
-          data: [
-            {
-              embedding,
-              index: indexId,
-            },
-          ],
+          method: 'POST',
+          body: JSON.stringify({
+            data: [
+              {
+                embedding,
+                index: indexId,
+              },
+            ],
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
   })
@@ -242,16 +272,19 @@ describe('Metal', () => {
 
     it('should error without payload', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.search()
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=10',
         {
-          index: 'index-id',
+          method: 'POST',
+          body: JSON.stringify({
+            index: 'index-id',
+          }),
+          headers: HEADERS,
         },
-        AXIOS_OPTS
       )
     })
 
@@ -260,7 +293,7 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.search({ imageBase64: base64 })
 
@@ -279,7 +312,7 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.search({ imageUrl })
 
@@ -298,7 +331,7 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.search({
         text,
@@ -321,7 +354,7 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       await metal.search({ text, idsOnly: true, limit: 100 })
 
@@ -354,7 +387,7 @@ describe('Metal', () => {
       const indexId = 'index-id'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(() => getMockRes(null));
 
       const idA = 'id-a'
       const idB = 'id-b'

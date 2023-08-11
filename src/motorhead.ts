@@ -1,4 +1,3 @@
-import axios from 'axios'
 import { API_URL } from './constants'
 import { type MotorheadClient, type MotorheadConfig, type Memory } from './types'
 
@@ -21,41 +20,45 @@ export class Motorhead implements MotorheadClient {
   }
 
   async addMemory(sessionId: string, payload: Memory): Promise<Memory> {
-    const { data } = await axios.post(`${this.baseUrl}/sessions/${sessionId}/memory`, payload, {
+    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+      method: 'POST',
+      body: JSON.stringify(payload),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
-      },
+      } as any,
     })
 
-    const memory: Memory = data?.data ?? data
-    return memory
+    const json = await res.json()
+    return json?.data ?? json
   }
 
   async getMemory(sessionId: string): Promise<Memory> {
-    const { data } = await axios.get(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
-      },
+      } as any,
     })
 
-    const memory: Memory = data?.data ?? data
-    return memory
+    const json = await res.json()
+    return json?.data ?? json
   }
 
   async deleteMemory(sessionId: string): Promise<void> {
-    const { data } = await axios.delete(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
-      },
+      } as any,
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json
   }
 }
 

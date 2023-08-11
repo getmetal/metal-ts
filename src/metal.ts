@@ -1,4 +1,3 @@
-import axios from 'axios'
 import mime from 'mime-types'
 import { API_URL, SUPPORTED_FILE_TYPES } from './constants'
 import { sanitizeFilename } from './helpers'
@@ -59,7 +58,10 @@ export class Metal implements Client {
       body.embedding = embedding
     }
 
-    const { data } = await axios.post(`${API_URL}/v1/index`, body, {
+
+    const res = await fetch(`${API_URL}/v1/index`, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -67,13 +69,16 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   async indexMany(payload: IndexPayload[]): Promise<object> {
     const body: BulkIndexPayload = { data: payload }
 
-    const { data } = await axios.post(`${API_URL}/v1/index/bulk`, body, {
+    const res = await fetch(`${API_URL}/v1/index/bulk`, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -81,7 +86,8 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   async search(payload: SearchInput = {}): Promise<object[]> {
@@ -108,7 +114,9 @@ export class Metal implements Client {
       url += '&idsOnly=true'
     }
 
-    const { data } = await axios.post(url, body, {
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -116,7 +124,8 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   async tune(payload: TuningInput): Promise<object> {
@@ -131,7 +140,9 @@ export class Metal implements Client {
 
     const body: TuningPayload = { index, ...payload }
 
-    const { data } = await axios.post(`${API_URL}/v1/tune`, body, {
+    const res = await fetch(`${API_URL}/v1/tune`, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -139,7 +150,8 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   async getOne(id: string, indexId?: string): Promise<object> {
@@ -153,7 +165,7 @@ export class Metal implements Client {
       throw new Error('indexId required')
     }
 
-    const { data } = await axios.get(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
+    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -161,7 +173,8 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   async deleteOne(id: string, indexId?: string): Promise<object> {
@@ -175,7 +188,8 @@ export class Metal implements Client {
       throw new Error('indexId required')
     }
 
-    const { data } = await axios.delete(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
+    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
+      method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -183,7 +197,8 @@ export class Metal implements Client {
       },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data;
   }
 
   async deleteMany(ids: string[], indexId?: string): Promise<object> {
@@ -196,16 +211,17 @@ export class Metal implements Client {
       throw new Error('ids required')
     }
 
-    const { data } = await axios.delete(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
+    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
+      body: JSON.stringify({ ids }),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-      data: { ids },
     })
 
-    return data?.data ?? data
+    const json = await res.json()
+    return json?.data ?? json;
   }
 
   private async createResource(payload: CreateResourcePayload): Promise<CreateFileResouceResponse> {
@@ -223,8 +239,14 @@ export class Metal implements Client {
       'x-metal-client-id': this.clientId,
     }
 
-    const { data } = await axios.post(url, body, { headers })
-    return data?.data ?? data
+    const res = await fetch(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers,
+    })
+
+    const json = await res.json()
+    return json?.data ?? json
   }
 
   private async uploadFileToUrl(payload: UploadFileToUrlPayload): Promise<object> {
@@ -234,8 +256,15 @@ export class Metal implements Client {
       'content-type': fileType,
       'content-length': fileSize.toString(),
     }
-    const { data } = await axios.put(url, file, { headers })
-    return data?.data ?? data
+
+    const res = await fetch(url, {
+      method: 'PUT',
+      body: file, // TODO: Confirm this..does it need to be jsonified?
+      headers,
+    });
+
+    const json = await res.json()
+    return json?.data ?? json
   }
 
   async uploadFile(file: UploadFilePayload, indexId?: string): Promise<object> {
