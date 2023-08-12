@@ -6,9 +6,9 @@ import fs from 'fs'
 const fetchMock = jest.spyOn(global, 'fetch')
 
 const getMockRes = (data: any) => async (): Promise<Response> => {
-  return await Promise.resolve({
+  return (await Promise.resolve({
     json: async () => await Promise.resolve({ data }),
-  }) as Response;
+  })) as Response
 }
 
 const API_KEY = 'api-key'
@@ -57,7 +57,7 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(getMockRes(null));
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ imageBase64: base64 })
 
@@ -396,7 +396,9 @@ describe('Metal', () => {
     it('should get one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      fetchMock.mockImplementationOnce(getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } }));
+      fetchMock.mockImplementationOnce(
+        getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } })
+      )
 
       await metal.getOne('megadeth')
 
