@@ -58,7 +58,6 @@ export class Metal implements Client {
       body.embedding = embedding
     }
 
-
     const res = await fetch(`${API_URL}/v1/index`, {
       method: 'POST',
       body: JSON.stringify(body),
@@ -70,7 +69,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   async indexMany(payload: IndexPayload[]): Promise<object> {
@@ -87,7 +86,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   async search(payload: SearchInput = {}): Promise<object[]> {
@@ -125,7 +124,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   async tune(payload: TuningInput): Promise<object> {
@@ -151,7 +150,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   async getOne(id: string, indexId?: string): Promise<object> {
@@ -174,7 +173,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   async deleteOne(id: string, indexId?: string): Promise<object> {
@@ -198,7 +197,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data;
+    return json?.data
   }
 
   async deleteMany(ids: string[], indexId?: string): Promise<object> {
@@ -222,7 +221,7 @@ export class Metal implements Client {
     })
 
     const json = await res.json()
-    return json?.data ?? json;
+    return json?.data ?? json
   }
 
   private async createResource(payload: CreateResourcePayload): Promise<CreateFileResouceResponse> {
@@ -262,7 +261,7 @@ export class Metal implements Client {
       method: 'PUT',
       body: file, // TODO: Confirm this..does it need to be jsonified?
       headers,
-    });
+    })
 
     const json = await res.json()
     return json?.data ?? json

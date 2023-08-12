@@ -1,16 +1,15 @@
 import { Motorhead } from '../src/index'
 import { type Memory } from '../src/types'
 
+let fetchMock: any = undefined
 
-let fetchMock: any = undefined;
-
-fetchMock = jest.spyOn(global, 'fetch');
+fetchMock = jest.spyOn(global, 'fetch')
 
 const getMockRes = (data: any) => {
   return Promise.resolve({
     json: () => Promise.resolve({ data }),
   })
-};
+}
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
@@ -20,7 +19,6 @@ const HEADERS_MANAGED = {
   'Content-Type': 'application/json',
   'x-metal-api-key': API_KEY,
   'x-metal-client-id': CLIENT_ID,
-
 }
 
 const HEADERS_NON_MANAGED = {
@@ -29,7 +27,7 @@ const HEADERS_NON_MANAGED = {
 
 describe('Motorhead', () => {
   beforeEach(() => {
-    fetchMock.mockClear();
+    fetchMock.mockClear()
   })
 
   it('should be defined', () => {
@@ -67,7 +65,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null));
+      fetchMock.mockImplementationOnce(() => getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
@@ -86,18 +84,15 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null));
+      fetchMock.mockImplementationOnce(() => getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        {
-          method: 'POST',
-          headers: HEADERS_NON_MANAGED,
-          body: JSON.stringify(MOCK_PAYLOAD),
-        }
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        method: 'POST',
+        headers: HEADERS_NON_MANAGED,
+        body: JSON.stringify(MOCK_PAYLOAD),
+      })
     })
   })
 
@@ -107,7 +102,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD));
+      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
@@ -115,8 +110,8 @@ describe('Motorhead', () => {
       expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
         {
-          headers: HEADERS_MANAGED
-        },
+          headers: HEADERS_MANAGED,
+        }
       )
     })
 
@@ -125,17 +120,14 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD));
+      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
       expect(res).toEqual(MOCK_PAYLOAD)
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        {
-          headers: HEADERS_NON_MANAGED
-        }
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        headers: HEADERS_NON_MANAGED,
+      })
     })
   })
 
@@ -144,7 +136,7 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null));
+      fetchMock.mockImplementationOnce(() => getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
@@ -152,8 +144,8 @@ describe('Motorhead', () => {
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
         {
           method: 'DELETE',
-          headers: HEADERS_MANAGED
-        },
+          headers: HEADERS_MANAGED,
+        }
       )
     })
 
@@ -161,17 +153,14 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null));
+      fetchMock.mockImplementationOnce(() => getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
-      expect(fetchMock).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        {
-          method: 'DELETE',
-          headers: HEADERS_NON_MANAGED
-        },
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        method: 'DELETE',
+        headers: HEADERS_NON_MANAGED,
+      })
     })
   })
 })
