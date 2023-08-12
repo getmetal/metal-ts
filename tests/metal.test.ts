@@ -540,7 +540,7 @@ describe('Metal', () => {
           'mocked.com/berghain?withquery=true',
           {
             method: 'PUT',
-            body: JSON.stringify(expect.anything()),
+            body: fs.readFileSync(filePath),
             headers: {
               'content-length': '43',
               'content-type': 'text/csv',

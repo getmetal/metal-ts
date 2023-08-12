@@ -212,6 +212,7 @@ export class Metal implements Client {
     }
 
     const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
+      method: 'DELETE',
       body: JSON.stringify({ ids }),
       headers: {
         'Content-Type': 'application/json',
