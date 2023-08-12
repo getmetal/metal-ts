@@ -3,14 +3,12 @@ import path from 'path'
 import { JSDOM } from 'jsdom'
 import fs from 'fs'
 
-let fetchMock: any = undefined
+const fetchMock = jest.spyOn(global, 'fetch')
 
-fetchMock = jest.spyOn(global, 'fetch')
-
-const getMockRes = (data: any) => {
-  return Promise.resolve({
-    json: () => Promise.resolve({ data }),
-  })
+const getMockRes = (data: any) => async (): Promise<Response> => {
+  return await Promise.resolve({
+    json: async () => await Promise.resolve({ data }),
+  }) as Response;
 }
 
 const API_KEY = 'api-key'
@@ -59,7 +57,7 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null));
 
       await metal.index({ imageBase64: base64 })
 
@@ -78,7 +76,7 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ imageUrl })
 
@@ -97,7 +95,7 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ text })
 
@@ -118,7 +116,7 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ metadata, text })
 
@@ -138,7 +136,7 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ embedding })
 
@@ -159,7 +157,7 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([{ text, index: indexId }])
 
@@ -185,7 +183,7 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([
         { metadata, text, index: indexId },
@@ -217,7 +215,7 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([{ index: indexId, embedding }])
 
@@ -245,7 +243,7 @@ describe('Metal', () => {
 
     it('should error without payload', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search()
 
@@ -263,7 +261,7 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ imageBase64: base64 })
 
@@ -282,7 +280,7 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ imageUrl })
 
@@ -301,7 +299,7 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({
         text,
@@ -324,7 +322,7 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ text, idsOnly: true, limit: 100 })
 
@@ -360,7 +358,7 @@ describe('Metal', () => {
       const indexId = 'index-id'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       const idA = 'id-a'
       const idB = 'id-b'
@@ -398,9 +396,7 @@ describe('Metal', () => {
     it('should get one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      fetchMock.mockImplementationOnce(() =>
-        getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } })
-      )
+      fetchMock.mockImplementationOnce(getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } }));
 
       await metal.getOne('megadeth')
 
@@ -430,7 +426,7 @@ describe('Metal', () => {
     it('should del one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.deleteOne('megadeth')
 
@@ -455,7 +451,7 @@ describe('Metal', () => {
     it('should del by ids', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.deleteMany(['megadeth', 'blacksabbath'])
 
@@ -474,8 +470,8 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         fetchMock
-          .mockImplementationOnce(() => getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
-          .mockImplementationOnce(() => getMockRes({}))
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
         await metal.uploadFile(filePath)
@@ -509,8 +505,8 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         fetchMock
-          .mockImplementationOnce(() => getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
-          .mockImplementationOnce(() => getMockRes({}))
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const filePath = path.join(__dirname, 'fixtures', '_+$!*badname.csv')
 
@@ -545,8 +541,8 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
         fetchMock
-          .mockImplementationOnce(() => getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
-          .mockImplementationOnce(() => getMockRes({}))
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const dom = new JSDOM()
         const fileContent = fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.csv'))

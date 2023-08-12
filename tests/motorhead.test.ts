@@ -1,14 +1,13 @@
 import { Motorhead } from '../src/index'
 import { type Memory } from '../src/types'
 
-let fetchMock: any = undefined
 
-fetchMock = jest.spyOn(global, 'fetch')
+const fetchMock = jest.spyOn(global, 'fetch')
 
-const getMockRes = (data: any) => {
-  return Promise.resolve({
-    json: () => Promise.resolve({ data }),
-  })
+const getMockRes = (data: any) => async (): Promise<Response> => {
+  return await Promise.resolve({
+    json: async () => await Promise.resolve({ data }),
+  }) as Response;
 }
 
 const API_KEY = 'api-key'
@@ -65,7 +64,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
@@ -84,7 +83,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
@@ -102,7 +101,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD))
+      fetchMock.mockImplementationOnce(getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
@@ -120,7 +119,7 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(MOCK_PAYLOAD))
+      fetchMock.mockImplementationOnce(getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
@@ -136,7 +135,7 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
@@ -153,7 +152,7 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      fetchMock.mockImplementationOnce(() => getMockRes(null))
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
