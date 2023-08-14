@@ -1,32 +1,33 @@
-import axios from 'axios'
 import { Motorhead } from '../src/index'
 import { type Memory } from '../src/types'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+const fetchMock = jest.spyOn(global, 'fetch')
+
+const getMockRes = (data: any) => async (): Promise<Response> => {
+  return (await Promise.resolve({
+    json: async () => await Promise.resolve({ data }),
+  })) as Response
+}
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
 const BASE_URL = 'https://google.com'
 
-const AXIOS_MANAGED_OPTS = {
-  headers: {
-    'Content-Type': 'application/json',
-    'x-metal-api-key': API_KEY,
-    'x-metal-client-id': CLIENT_ID,
-  },
+const HEADERS_MANAGED = {
+  'Content-Type': 'application/json',
+  'x-metal-api-key': API_KEY,
+  'x-metal-client-id': CLIENT_ID,
 }
 
-const AXIOS_NON_MANAGED_OPTS = {
-  headers: {
-    'Content-Type': 'application/json',
-  },
+const HEADERS_NON_MANAGED = {
+  'Content-Type': 'application/json',
 }
 
 describe('Motorhead', () => {
   beforeEach(() => {
-    mockedAxios.post.mockClear()
+    fetchMock.mockClear()
   })
+
   it('should be defined', () => {
     expect(Motorhead).toBeDefined()
   })
@@ -62,14 +63,17 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
-        MOCK_PAYLOAD,
-        AXIOS_MANAGED_OPTS
+        {
+          method: 'POST',
+          headers: HEADERS_MANAGED,
+          body: JSON.stringify(MOCK_PAYLOAD),
+        }
       )
     })
 
@@ -78,15 +82,15 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.addMemory(MOCK_SESSION, MOCK_PAYLOAD)
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        MOCK_PAYLOAD,
-        AXIOS_NON_MANAGED_OPTS
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        method: 'POST',
+        headers: HEADERS_NON_MANAGED,
+        body: JSON.stringify(MOCK_PAYLOAD),
+      })
     })
   })
 
@@ -96,14 +100,16 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      mockedAxios.get.mockResolvedValue({ data: MOCK_PAYLOAD })
+      fetchMock.mockImplementationOnce(getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
       expect(res).toEqual(MOCK_PAYLOAD)
-      expect(axios.get).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
-        AXIOS_MANAGED_OPTS
+        {
+          headers: HEADERS_MANAGED,
+        }
       )
     })
 
@@ -112,15 +118,14 @@ describe('Motorhead', () => {
       const MOCK_PAYLOAD: Memory = { messages: [{ role: 'AI', content: 'hey' }] }
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      mockedAxios.get.mockResolvedValue({ data: MOCK_PAYLOAD })
+      fetchMock.mockImplementationOnce(getMockRes(MOCK_PAYLOAD))
 
       const res = await motorhead.getMemory(MOCK_SESSION)
 
       expect(res).toEqual(MOCK_PAYLOAD)
-      expect(axios.get).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        AXIOS_NON_MANAGED_OPTS
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        headers: HEADERS_NON_MANAGED,
+      })
     })
   })
 
@@ -129,13 +134,16 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ apiKey: API_KEY, clientId: CLIENT_ID })
 
-      mockedAxios.delete.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/motorhead/sessions/${MOCK_SESSION}/memory`,
-        AXIOS_MANAGED_OPTS
+        {
+          method: 'DELETE',
+          headers: HEADERS_MANAGED,
+        }
       )
     })
 
@@ -143,14 +151,14 @@ describe('Motorhead', () => {
       const MOCK_SESSION = 'session-id'
       const motorhead = new Motorhead({ baseUrl: BASE_URL })
 
-      mockedAxios.delete.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await motorhead.deleteMemory(MOCK_SESSION)
 
-      expect(axios.delete).toHaveBeenCalledWith(
-        `${BASE_URL}/sessions/${MOCK_SESSION}/memory`,
-        AXIOS_NON_MANAGED_OPTS
-      )
+      expect(fetchMock).toHaveBeenCalledWith(`${BASE_URL}/sessions/${MOCK_SESSION}/memory`, {
+        method: 'DELETE',
+        headers: HEADERS_NON_MANAGED,
+      })
     })
   })
 })

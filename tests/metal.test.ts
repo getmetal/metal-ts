@@ -1,27 +1,30 @@
 import { Metal } from '../src/index'
-import axios from 'axios'
 import path from 'path'
 import { JSDOM } from 'jsdom'
 import fs from 'fs'
 
-jest.mock('axios')
-const mockedAxios = axios as jest.Mocked<typeof axios>
+const fetchMock = jest.spyOn(global, 'fetch')
+
+const getMockRes = (data: any) => async (): Promise<Response> => {
+  return (await Promise.resolve({
+    json: async () => await Promise.resolve({ data }),
+  })) as Response
+}
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
 
-const AXIOS_OPTS = {
-  headers: {
-    'Content-Type': 'application/json',
-    'x-metal-api-key': API_KEY,
-    'x-metal-client-id': CLIENT_ID,
-  },
+const HEADERS = {
+  'Content-Type': 'application/json',
+  'x-metal-api-key': API_KEY,
+  'x-metal-client-id': CLIENT_ID,
 }
 
 describe('Metal', () => {
   beforeEach(() => {
-    mockedAxios.post.mockClear()
+    fetchMock.mockClear()
   })
+
   it('should be defined', () => {
     expect(Metal).toBeDefined()
   })
@@ -54,20 +57,18 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ imageBase64: base64 })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index',
-        {
-          imageBase64: base64,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        headers: HEADERS,
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
-
-      mockedAxios.post.mockClear()
+          imageBase64: base64,
+        }),
+      })
     })
 
     it('should send imageUrl payload', async () => {
@@ -75,18 +76,18 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ imageUrl })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index',
-        {
-          imageUrl,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
+          imageUrl,
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send text payload', async () => {
@@ -94,18 +95,18 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ text })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index',
-        {
-          text,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
+          text,
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send metadata payload', async () => {
@@ -115,19 +116,19 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ metadata, text })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index',
-        {
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        body: JSON.stringify({
+          index: indexId,
           metadata,
           text,
-          index: indexId,
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send embedding payload', async () => {
@@ -135,18 +136,18 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.index({ embedding })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index',
-        {
-          embedding,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
+          embedding,
+        }),
+        headers: HEADERS,
+      })
     })
   })
 
@@ -156,22 +157,22 @@ describe('Metal', () => {
       const text = 'text-to-index'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([{ text, index: indexId }])
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index/bulk',
-        {
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
+        method: 'POST',
+        body: JSON.stringify({
           data: [
             {
               text,
               index: indexId,
             },
           ],
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send metadata payload', async () => {
@@ -182,16 +183,16 @@ describe('Metal', () => {
 
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([
         { metadata, text, index: indexId },
         { metadata, text: text2, index: indexId },
       ])
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index/bulk',
-        {
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
+        method: 'POST',
+        body: JSON.stringify({
           data: [
             {
               metadata,
@@ -204,9 +205,9 @@ describe('Metal', () => {
               index: indexId,
             },
           ],
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send embedding payload', async () => {
@@ -214,22 +215,22 @@ describe('Metal', () => {
       const embedding = [1, 2, 3]
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([{ index: indexId, embedding }])
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/index/bulk',
-        {
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
+        method: 'POST',
+        body: JSON.stringify({
           data: [
             {
-              embedding,
               index: indexId,
+              embedding,
             },
           ],
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
   })
 
@@ -242,17 +243,17 @@ describe('Metal', () => {
 
     it('should error without payload', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search()
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=10',
-        {
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/search?limit=10', {
+        method: 'POST',
+        body: JSON.stringify({
           index: 'index-id',
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send imageBase64 payload', async () => {
@@ -260,18 +261,18 @@ describe('Metal', () => {
       const base64 = 'base64'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ imageBase64: base64 })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=10',
-        {
-          imageBase64: base64,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/search?limit=10', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
+          imageBase64: base64,
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send imageUrl payload', async () => {
@@ -279,18 +280,18 @@ describe('Metal', () => {
       const imageUrl = 'image.png'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ imageUrl })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=10',
-        {
-          imageUrl,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/search?limit=10', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
-        },
-        AXIOS_OPTS
-      )
+          imageUrl,
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should send text payload', async () => {
@@ -298,22 +299,22 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({
         text,
         filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
       })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        'https://api.getmetal.io/v1/search?limit=10',
-        {
-          text,
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/search?limit=10', {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
           filters: { and: [{ field: 'favoriteNumber', operator: 'lt', value: 666 }] },
-        },
-        AXIOS_OPTS
-      )
+          text,
+        }),
+        headers: HEADERS,
+      })
     })
 
     it('should add idsOnly=true querystring', async () => {
@@ -321,17 +322,20 @@ describe('Metal', () => {
       const text = 'text-to-search'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ text, idsOnly: true, limit: 100 })
 
-      expect(axios.post).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=100&idsOnly=true',
         {
-          text,
-          index: indexId,
-        },
-        AXIOS_OPTS
+          method: 'POST',
+          body: JSON.stringify({
+            index: indexId,
+            text,
+          }),
+          headers: HEADERS,
+        }
       )
     })
   })
@@ -354,7 +358,7 @@ describe('Metal', () => {
       const indexId = 'index-id'
       const metal = new Metal(API_KEY, CLIENT_ID, indexId)
 
-      mockedAxios.post.mockResolvedValue({ data: null })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       const idA = 'id-a'
       const idB = 'id-b'
@@ -362,16 +366,16 @@ describe('Metal', () => {
 
       await metal.tune({ idA, idB, label })
 
-      expect(axios.post).toHaveBeenCalledWith(
-        `https://api.getmetal.io/v1/tune`,
-        {
+      expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/tune`, {
+        method: 'POST',
+        body: JSON.stringify({
           index: indexId,
           idA,
           idB,
           label,
-        },
-        AXIOS_OPTS
-      )
+        }),
+        headers: HEADERS,
+      })
     })
   })
 
@@ -392,15 +396,17 @@ describe('Metal', () => {
     it('should get one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.get.mockResolvedValue({
-        data: { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
-      })
+      fetchMock.mockImplementationOnce(
+        getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } })
+      )
 
       await metal.getOne('megadeth')
 
-      expect(axios.get).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
-        AXIOS_OPTS
+        {
+          headers: HEADERS,
+        }
       )
     })
   })
@@ -422,15 +428,16 @@ describe('Metal', () => {
     it('should del one by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.delete.mockResolvedValue({
-        data: null,
-      })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.deleteOne('megadeth')
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
-        AXIOS_OPTS
+        {
+          method: 'DELETE',
+          headers: HEADERS,
+        }
       )
     })
   })
@@ -446,17 +453,16 @@ describe('Metal', () => {
     it('should del by ids', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-      mockedAxios.delete.mockResolvedValue({
-        data: null,
-      })
+      fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.deleteMany(['megadeth', 'blacksabbath'])
 
-      expect(axios.delete).toHaveBeenCalledWith(
+      expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/bulk`,
         {
-          ...AXIOS_OPTS,
-          data: { ids: ['megadeth', 'blacksabbath'] },
+          method: 'DELETE',
+          body: JSON.stringify({ ids: ['megadeth', 'blacksabbath'] }),
+          headers: HEADERS,
         }
       )
     })
@@ -465,89 +471,80 @@ describe('Metal', () => {
       it('takes path', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-        mockedAxios.put.mockResolvedValue({
-          data: {},
-        })
-
-        mockedAxios.post.mockResolvedValue({
-          data: { url: 'mocked.com/berghain?withquery=true' },
-        })
+        fetchMock
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
-
         await metal.uploadFile(filePath)
 
-        expect(axios.post).toHaveBeenCalledWith(
+        expect(fetchMock).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
           {
-            fileName: 'sample.csv',
-            fileType: 'text/csv',
-          },
-          {
-            headers: { ...AXIOS_OPTS.headers, 'x-metal-file-size': '43' },
-          }
-        )
-
-        expect(axios.put).toHaveBeenCalledWith(
-          'mocked.com/berghain?withquery=true',
-          expect.anything(),
-          {
+            method: 'POST',
+            body: JSON.stringify({
+              fileName: 'sample.csv',
+              fileType: 'text/csv',
+            }),
             headers: {
-              'content-length': '43',
-              'content-type': 'text/csv',
+              ...HEADERS,
+              'x-metal-file-size': '43',
             },
           }
         )
+
+        expect(fetchMock).toHaveBeenCalledWith('mocked.com/berghain?withquery=true', {
+          method: 'PUT',
+          body: fs.readFileSync(filePath),
+          headers: {
+            'content-length': '43',
+            'content-type': 'text/csv',
+          },
+        })
       })
 
       it('sanitizes file name', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-        mockedAxios.put.mockResolvedValue({
-          data: {},
-        })
-
-        mockedAxios.post.mockResolvedValue({
-          data: { url: 'mocked.com/berghain?withquery=true' },
-        })
+        fetchMock
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const filePath = path.join(__dirname, 'fixtures', '_+$!*badname.csv')
 
         await metal.uploadFile(filePath)
 
-        expect(axios.post).toHaveBeenCalledWith(
+        expect(fetchMock).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
           {
-            fileName: '_____badname.csv',
-            fileType: 'text/csv',
-          },
-          {
-            headers: { ...AXIOS_OPTS.headers, 'x-metal-file-size': '14' },
-          }
-        )
-
-        expect(axios.put).toHaveBeenCalledWith(
-          'mocked.com/berghain?withquery=true',
-          expect.anything(),
-          {
+            method: 'POST',
+            body: JSON.stringify({
+              fileName: '_____badname.csv',
+              fileType: 'text/csv',
+            }),
             headers: {
-              'content-length': '14',
-              'content-type': 'text/csv',
+              ...HEADERS,
+              'x-metal-file-size': '14',
             },
           }
         )
+
+        expect(fetchMock).toHaveBeenCalledWith('mocked.com/berghain?withquery=true', {
+          method: 'PUT',
+          body: expect.anything(),
+          headers: {
+            'content-length': '14',
+            'content-type': 'text/csv',
+          },
+        })
       })
 
       it('takes File object', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
-        mockedAxios.put.mockResolvedValue({
-          data: {},
-        })
-
-        mockedAxios.post.mockResolvedValue({
-          data: { url: 'mocked.com/berghain?withquery=true' },
-        })
+        fetchMock
+          .mockImplementationOnce(getMockRes({ url: 'mocked.com/berghain?withquery=true' }))
+          .mockImplementationOnce(getMockRes({}))
 
         const dom = new JSDOM()
         const fileContent = fs.readFileSync(path.join(__dirname, 'fixtures', 'sample.csv'))
@@ -555,32 +552,29 @@ describe('Metal', () => {
 
         await metal.uploadFile(file)
 
-        expect(mockedAxios.post).toHaveBeenCalledWith(
+        expect(fetchMock).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/indexes/index-id/files`,
           {
-            fileName: 'sample.csv',
-            fileType: 'text/csv',
-          },
-          {
+            method: 'POST',
+            body: JSON.stringify({
+              fileName: 'sample.csv',
+              fileType: 'text/csv',
+            }),
             headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': API_KEY,
-              'x-metal-client-id': CLIENT_ID,
+              ...HEADERS,
               'x-metal-file-size': '43',
             },
           }
         )
 
-        expect(mockedAxios.put).toHaveBeenCalledWith(
-          'mocked.com/berghain?withquery=true',
-          expect.anything(),
-          {
-            headers: {
-              'content-length': '43',
-              'content-type': 'text/csv',
-            },
-          }
-        )
+        expect(fetchMock).toHaveBeenCalledWith('mocked.com/berghain?withquery=true', {
+          method: 'PUT',
+          body: expect.anything(),
+          headers: {
+            'content-length': '43',
+            'content-type': 'text/csv',
+          },
+        })
       })
     })
   })
