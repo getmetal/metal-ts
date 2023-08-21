@@ -6,6 +6,7 @@ const fetchMock = jest.spyOn(global, 'fetch')
 const getMockRes = (data: any) => async (): Promise<Response> => {
   return (await Promise.resolve({
     json: async () => await Promise.resolve({ data }),
+    ok: true,
   })) as Response
 }
 

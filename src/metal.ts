@@ -1,6 +1,7 @@
 import mime from 'mime-types'
 import { API_URL, SUPPORTED_FILE_TYPES } from './constants'
 import { sanitizeFilename } from './helpers'
+import { request } from './request'
 import {
   type Client,
   type IndexInput,
@@ -58,7 +59,7 @@ export class Metal implements Client {
       body.embedding = embedding
     }
 
-    const res = await fetch(`${API_URL}/v1/index`, {
+    const data = await request(`${API_URL}/v1/index`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -68,14 +69,13 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async indexMany(payload: IndexPayload[]): Promise<object> {
     const body: BulkIndexPayload = { data: payload }
 
-    const res = await fetch(`${API_URL}/v1/index/bulk`, {
+    const data = await request(`${API_URL}/v1/index/bulk`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -85,8 +85,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async search(payload: SearchInput = {}): Promise<object[]> {
@@ -113,7 +112,7 @@ export class Metal implements Client {
       url += '&idsOnly=true'
     }
 
-    const res = await fetch(url, {
+    const data = await request(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -123,8 +122,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async tune(payload: TuningInput): Promise<object> {
@@ -139,7 +137,7 @@ export class Metal implements Client {
 
     const body: TuningPayload = { index, ...payload }
 
-    const res = await fetch(`${API_URL}/v1/tune`, {
+    const data = await request(`${API_URL}/v1/tune`, {
       method: 'POST',
       body: JSON.stringify(body),
       headers: {
@@ -149,8 +147,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async getOne(id: string, indexId?: string): Promise<object> {
@@ -164,7 +161,7 @@ export class Metal implements Client {
       throw new Error('indexId required')
     }
 
-    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
+    const data = await request(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -172,8 +169,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async deleteOne(id: string, indexId?: string): Promise<object> {
@@ -187,7 +183,7 @@ export class Metal implements Client {
       throw new Error('indexId required')
     }
 
-    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
+    const data = await request(`${API_URL}/v1/indexes/${index}/documents/${id}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -196,8 +192,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data
+    return data
   }
 
   async deleteMany(ids: string[], indexId?: string): Promise<object> {
@@ -210,7 +205,7 @@ export class Metal implements Client {
       throw new Error('ids required')
     }
 
-    const res = await fetch(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
+    const data = await request(`${API_URL}/v1/indexes/${index}/documents/bulk`, {
       method: 'DELETE',
       body: JSON.stringify({ ids }),
       headers: {
@@ -220,8 +215,7 @@ export class Metal implements Client {
       },
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   private async createResource(payload: CreateResourcePayload): Promise<CreateFileResouceResponse> {
@@ -239,14 +233,13 @@ export class Metal implements Client {
       'x-metal-client-id': this.clientId,
     }
 
-    const res = await fetch(url, {
+    const data = await request(url, {
       method: 'POST',
       body: JSON.stringify(body),
       headers,
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   private async uploadFileToUrl(payload: UploadFileToUrlPayload): Promise<object> {
@@ -257,14 +250,13 @@ export class Metal implements Client {
       'content-length': fileSize.toString(),
     }
 
-    const res = await fetch(url, {
+    const data = await request(url, {
       method: 'PUT',
-      body: file, // TODO: Confirm this..does it need to be jsonified?
+      body: file,
       headers,
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async uploadFile(file: UploadFilePayload, indexId?: string): Promise<object> {
