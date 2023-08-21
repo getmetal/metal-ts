@@ -5,11 +5,15 @@ import fs from 'fs'
 
 const fetchMock = jest.spyOn(global, 'fetch')
 
-const getMockRes = (data: any) => async (): Promise<Response> => {
-  return (await Promise.resolve({
-    json: async () => await Promise.resolve({ data }),
-  })) as Response
-}
+const getMockRes =
+  (data: any, ok: boolean = true, status: number = 200) =>
+  async (): Promise<Response> => {
+    return (await Promise.resolve({
+      json: async () => await Promise.resolve({ data }),
+      ok,
+      status,
+    })) as Response
+  }
 
 const API_KEY = 'api-key'
 const CLIENT_ID = 'client-id'
@@ -149,6 +153,32 @@ describe('Metal', () => {
         headers: HEADERS,
       })
     })
+
+    it('should handle error and reject', async () => {
+      const indexId = 'index-id'
+      const text = 'text-to-index'
+      const metal = new Metal(API_KEY, CLIENT_ID, indexId)
+
+      fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
+
+      await metal
+        .index({ text })
+        .then(() => {
+          throw new Error('should not resolve')
+        })
+        .catch((err) => {
+          expect(err.message).toBe('Error status code: 400.')
+        })
+
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index', {
+        method: 'POST',
+        body: JSON.stringify({
+          index: indexId,
+          text,
+        }),
+        headers: HEADERS,
+      })
+    })
   })
 
   describe('indexMany()', () => {
@@ -218,6 +248,36 @@ describe('Metal', () => {
       fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.indexMany([{ index: indexId, embedding }])
+
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
+        method: 'POST',
+        body: JSON.stringify({
+          data: [
+            {
+              index: indexId,
+              embedding,
+            },
+          ],
+        }),
+        headers: HEADERS,
+      })
+    })
+
+    it('should handle error', async () => {
+      const indexId = 'index-id'
+      const embedding = [1, 2, 3]
+      const metal = new Metal(API_KEY, CLIENT_ID, indexId)
+
+      fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
+
+      await metal
+        .indexMany([{ index: indexId, embedding }])
+        .then(() => {
+          throw new Error('should not resolve')
+        })
+        .catch((err) => {
+          expect(err.message).toBe('Error status code: 400.')
+        })
 
       expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
         method: 'POST',
@@ -325,6 +385,35 @@ describe('Metal', () => {
       fetchMock.mockImplementationOnce(getMockRes(null))
 
       await metal.search({ text, idsOnly: true, limit: 100 })
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        'https://api.getmetal.io/v1/search?limit=100&idsOnly=true',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            index: indexId,
+            text,
+          }),
+          headers: HEADERS,
+        }
+      )
+    })
+
+    it('should handle error', async () => {
+      const indexId = 'index-id'
+      const text = 'text-to-search'
+      const metal = new Metal(API_KEY, CLIENT_ID, indexId)
+
+      fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
+
+      await metal
+        .search({ text, idsOnly: true, limit: 100 })
+        .then(() => {
+          throw new Error('should not resolve')
+        })
+        .catch((err) => {
+          expect(err.message).toBe('Error status code: 400.')
+        })
 
       expect(fetchMock).toHaveBeenCalledWith(
         'https://api.getmetal.io/v1/search?limit=100&idsOnly=true',

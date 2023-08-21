@@ -1,5 +1,6 @@
 import { API_URL } from './constants'
 import { type MotorheadClient, type MotorheadConfig, type Memory } from './types'
+import { request } from './request'
 
 const MANAGED_BASE_URL = `${API_URL}/v1/motorhead`
 
@@ -20,7 +21,7 @@ export class Motorhead implements MotorheadClient {
   }
 
   async addMemory(sessionId: string, payload: Memory): Promise<Memory> {
-    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+    const data = await request(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       method: 'POST',
       body: JSON.stringify(payload),
       headers: {
@@ -30,12 +31,11 @@ export class Motorhead implements MotorheadClient {
       } as any,
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async getMemory(sessionId: string): Promise<Memory> {
-    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+    const data = await request(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -43,12 +43,11 @@ export class Motorhead implements MotorheadClient {
       } as any,
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 
   async deleteMemory(sessionId: string): Promise<void> {
-    const res = await fetch(`${this.baseUrl}/sessions/${sessionId}/memory`, {
+    const data = await request(`${this.baseUrl}/sessions/${sessionId}/memory`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -57,8 +56,7 @@ export class Motorhead implements MotorheadClient {
       } as any,
     })
 
-    const json = await res.json()
-    return json?.data ?? json
+    return data
   }
 }
 
