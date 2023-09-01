@@ -307,8 +307,8 @@ describe('Metal', () => {
         body: JSON.stringify({
           data: [
             {
-              index: indexId,
               embedding,
+              index: indexId,
             },
           ],
         }),
