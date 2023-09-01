@@ -41,6 +41,16 @@ export interface IndexInput {
   metadata?: object
 }
 
+export interface BulkIndexItemInput {
+  index?: string
+  id?: string
+  imageBase64?: string
+  imageUrl?: string
+  text?: string
+  embedding?: number[]
+  metadata?: object
+}
+
 export interface IndexPayload {
   index: string
   id?: string
@@ -52,7 +62,7 @@ export interface IndexPayload {
 }
 
 export interface BulkIndexPayload {
-  data: IndexPayload[]
+  data: BulkIndexItemInput[]
 }
 
 export type Operator = 'eq' | 'gt' | 'gte' | 'lt' | 'lte'

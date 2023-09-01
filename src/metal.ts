@@ -6,6 +6,7 @@ import {
   type Client,
   type IndexInput,
   type IndexPayload,
+  type BulkIndexItemInput,
   type BulkIndexPayload,
   type SearchInput,
   type SearchPayload,
@@ -72,7 +73,13 @@ export class Metal implements Client {
     return data
   }
 
-  async indexMany(payload: IndexPayload[]): Promise<object> {
+  async indexMany(payload: BulkIndexItemInput[]): Promise<object> {
+    for (const item of payload) {
+      if (!item.index) {
+        item.index = this.indexId
+      }
+    }
+
     const body: BulkIndexPayload = { data: payload }
 
     const data = await request(`${API_URL}/v1/index/bulk`, {
