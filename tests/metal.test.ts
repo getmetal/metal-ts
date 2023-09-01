@@ -314,6 +314,7 @@ describe('Metal', () => {
         }),
         headers: HEADERS,
       })
+    })
   })
 
   describe('search()', () => {
