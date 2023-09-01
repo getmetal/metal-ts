@@ -292,6 +292,29 @@ describe('Metal', () => {
         headers: HEADERS,
       })
     })
+
+    it('should inject index into payload', async () => {
+      const indexId = 'index-id'
+      const embedding = [1, 2, 3]
+      const metal = new Metal(API_KEY, CLIENT_ID, indexId)
+
+      fetchMock.mockImplementationOnce(getMockRes(null))
+
+      await metal.indexMany([{ embedding }])
+
+      expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/index/bulk', {
+        method: 'POST',
+        body: JSON.stringify({
+          data: [
+            {
+              embedding,
+              index: indexId,
+            },
+          ],
+        }),
+        headers: HEADERS,
+      })
+    })
   })
 
   describe('search()', () => {
