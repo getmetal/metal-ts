@@ -317,11 +317,12 @@ export class Metal implements Client {
 
   async getDataSource(id: string): Promise<object> {
     if (!id) {
-      throw new Error('datasource_id required')
+      throw new Error('id required')
     }
 
     const url = `${API_URL}/v1/datasources/${id}`
     const data = await request(url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -332,13 +333,14 @@ export class Metal implements Client {
     return data
   }
 
-  async getAllDataSources(limit?: number, offset?: number): Promise<object> {
+  async getAllDataSources(limit?: number, page?: number): Promise<object> {
     const params = new URLSearchParams()
     if (limit) params.append('limit', limit.toString())
-    if (offset) params.append('offset', offset.toString())
+    if (page) params.append('page', page.toString())
 
     const url = `${API_URL}/v1/datasources?${params.toString()}`
     const data = await request(url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -351,7 +353,7 @@ export class Metal implements Client {
 
   async deleteDataSource(id: string): Promise<void> {
     if (!id) {
-      throw new Error('datasource_id required')
+      throw new Error('id required')
     }
 
     const url = `${API_URL}/v1/datasources/${id}`
@@ -371,7 +373,7 @@ export class Metal implements Client {
 
   async updateDataSource(id: string, payload: Record<string, any>): Promise<object> {
     if (!id) {
-      throw new Error('datasource_id required')
+      throw new Error('id required')
     }
 
     const url = `${API_URL}/v1/datasources/${id}`
@@ -390,11 +392,12 @@ export class Metal implements Client {
 
   async getDataEntity(id: string): Promise<object> {
     if (!id) {
-      throw new Error('dataentity_id required')
+      throw new Error('id required')
     }
 
     const url = `${API_URL}/v1/data-entities/${id}`
     const data = await request(url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
@@ -407,7 +410,7 @@ export class Metal implements Client {
 
   async deleteDataEntity(id: string): Promise<void> {
     if (!id) {
-      throw new Error('dataentity_id required')
+      throw new Error('id required')
     }
 
     const url = `${API_URL}/v1/data-entities/${id}`
@@ -425,17 +428,18 @@ export class Metal implements Client {
     }
   }
 
-  async getAllDataEntities(datasourceId: string, limit?: number, offset?: number): Promise<object> {
+  async getAllDataEntities(datasourceId: string, limit?: number, page?: number): Promise<object> {
     if (!datasourceId) {
-      throw new Error('datasource ID required')
+      throw new Error('id required')
     }
 
     const params = new URLSearchParams()
     if (limit) params.append('limit', limit.toString())
-    if (offset) params.append('offset', offset.toString())
+    if (page) params.append('page', page.toString())
 
     const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
     const data = await request(url, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,
