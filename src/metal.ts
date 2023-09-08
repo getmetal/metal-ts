@@ -301,150 +301,149 @@ export class Metal implements Client {
   }
 
   async createDataSource(payload: Record<string, any>): Promise<object> {
-    const url = `${API_URL}/v1/datasources`;
+    const url = `${API_URL}/v1/datasources`
     const data = await request(url, {
-        method: 'POST',
-        body: JSON.stringify(payload),
-        headers: {
-            'Content-Type': 'application/json',
-            'x-metal-api-key': this.apiKey,
-            'x-metal-client-id': this.clientId,
-        },
-    });
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-    return data;
-}
+    return data
+  }
 
   async getDataSource(id: string): Promise<object> {
-      if (!id) {
-          throw new Error("datasource_id required");
-      }
+    if (!id) {
+      throw new Error('datasource_id required')
+    }
 
-      const url = `${API_URL}/v1/datasources/${id}`;
-      const data = await request(url, {
-          headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': this.apiKey,
-              'x-metal-client-id': this.clientId,
-          },
-      });
+    const url = `${API_URL}/v1/datasources/${id}`
+    const data = await request(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-      return data;
+    return data
   }
 
   async getAllDataSources(limit?: number, offset?: number): Promise<object> {
-      const params = new URLSearchParams();
-      if (limit) params.append('limit', limit.toString());
-      if (offset) params.append('offset', offset.toString());
+    const params = new URLSearchParams()
+    if (limit) params.append('limit', limit.toString())
+    if (offset) params.append('offset', offset.toString())
 
-      const url = `${API_URL}/v1/datasources?${params.toString()}`;
-      const data = await request(url, {
-          headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': this.apiKey,
-              'x-metal-client-id': this.clientId,
-          },
-      });
+    const url = `${API_URL}/v1/datasources?${params.toString()}`
+    const data = await request(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-      return data;
+    return data
   }
 
   async deleteDataSource(id: string): Promise<void> {
     if (!id) {
-        throw new Error("datasource_id required");
+      throw new Error('datasource_id required')
     }
 
-    const url = `${API_URL}/v1/datasources/${id}`;
+    const url = `${API_URL}/v1/datasources/${id}`
     const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-metal-api-key': this.apiKey,
-            'x-metal-client-id': this.clientId,
-        },
-    });
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
     if (!response.ok) {
-        throw new Error(`Error deleting data source: ${response.statusText}`);
+      throw new Error(`Error deleting data source: ${response.statusText}`)
     }
-
-}
+  }
 
   async updateDataSource(id: string, payload: Record<string, any>): Promise<object> {
-      if (!id) {
-          throw new Error("datasource_id required");
-      }
+    if (!id) {
+      throw new Error('datasource_id required')
+    }
 
-      const url = `${API_URL}/v1/datasources/${id}`;
-      const data = await request(url, {
-          method: 'PUT',
-          body: JSON.stringify(payload),
-          headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': this.apiKey,
-              'x-metal-client-id': this.clientId,
-          },
-      });
+    const url = `${API_URL}/v1/datasources/${id}`
+    const data = await request(url, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-      return data;
+    return data
   }
 
   async getDataEntity(id: string): Promise<object> {
-      if (!id) {
-          throw new Error("dataentity_id required");
-      }
+    if (!id) {
+      throw new Error('dataentity_id required')
+    }
 
-      const url = `${API_URL}/v1/data-entities/${id}`;
-      const data = await request(url, {
-          headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': this.apiKey,
-              'x-metal-client-id': this.clientId,
-          },
-      });
+    const url = `${API_URL}/v1/data-entities/${id}`
+    const data = await request(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-      return data;
+    return data
   }
 
   async deleteDataEntity(id: string): Promise<void> {
     if (!id) {
-        throw new Error("dataentity_id required");
+      throw new Error('dataentity_id required')
     }
 
-    const url = `${API_URL}/v1/data-entities/${id}`;
+    const url = `${API_URL}/v1/data-entities/${id}`
     const response = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-metal-api-key': this.apiKey,
-            'x-metal-client-id': this.clientId,
-        },
-    });
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
     if (!response.ok) {
-        throw new Error(`Error deleting data entity: ${response.statusText}`);
+      throw new Error(`Error deleting data entity: ${response.statusText}`)
     }
-}
+  }
 
   async getAllDataEntities(datasourceId: string, limit?: number, offset?: number): Promise<object> {
-      if (!datasourceId) {
-          throw new Error("datasource ID required");
-      }
+    if (!datasourceId) {
+      throw new Error('datasource ID required')
+    }
 
-      const params = new URLSearchParams();
-      if (limit) params.append('limit', limit.toString());
-      if (offset) params.append('offset', offset.toString());
+    const params = new URLSearchParams()
+    if (limit) params.append('limit', limit.toString())
+    if (offset) params.append('offset', offset.toString())
 
-      const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`;
-      const data = await request(url, {
-          headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': this.apiKey,
-              'x-metal-client-id': this.clientId,
-          },
-      });
+    const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
+    const data = await request(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-      return data;
+    return data
   }
 }
 
