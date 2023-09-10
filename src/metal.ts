@@ -17,6 +17,8 @@ import {
   type UploadFileToUrlPayload,
   type UploadFilePayload,
   type CreateFileResouceResponse,
+  type CreateDataSourcePayload,
+  type UpdateDataSourcePayload,
 } from './types'
 
 export class Metal implements Client {
@@ -300,7 +302,7 @@ export class Metal implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 
-  async createDataSource(payload: Record<string, any>): Promise<object> {
+  async createDataSource(payload: CreateDataSourcePayload): Promise<object> {
     const url = `${API_URL}/v1/datasources`
     const data = await request(url, {
       method: 'POST',
@@ -371,7 +373,7 @@ export class Metal implements Client {
     }
   }
 
-  async updateDataSource(id: string, payload: Record<string, any>): Promise<object> {
+  async updateDataSource(id: string, payload: UpdateDataSourcePayload): Promise<object> {
     if (!id) {
       throw new Error('id required')
     }

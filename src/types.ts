@@ -136,3 +136,16 @@ export interface FilePayload {
 export interface CreateFileResouceResponse {
   url: string
 }
+
+export interface MetadataField {
+  name: string;
+  type: string | number;
+  description: string;
+}
+
+export interface CreateDataSourcePayload {
+  name: string;
+  sourcetype: 'File' | 'Text';
+  autoExtract: boolean;
+  metadataFields?: MetadataField[];
+}
