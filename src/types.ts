@@ -138,21 +138,21 @@ export interface CreateFileResouceResponse {
 }
 
 export interface MetadataField {
-  name: string;
-  type: string | number;
-  description: string;
+  name: string
+  type: string | number
+  description: string
 }
 
 export interface CreateDataSourcePayload {
-  name: string;
-  sourcetype: 'File' | 'Text';
-  autoExtract: boolean;
-  metadataFields?: MetadataField[];
+  name: string
+  sourcetype: 'File' | 'Text'
+  autoExtract: boolean
+  metadataFields?: MetadataField[]
 }
 
 export interface UpdateDataSourcePayload {
-  name?: string;
-  sourcetype?: 'File' | 'Text';
-  autoExtract?: boolean;
-  metadataFields?: MetadataField[];
+  name?: string
+  sourcetype?: 'File' | 'Text'
+  autoExtract?: boolean
+  metadataFields?: MetadataField[]
 }
