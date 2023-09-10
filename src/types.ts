@@ -149,3 +149,10 @@ export interface CreateDataSourcePayload {
   autoExtract: boolean;
   metadataFields?: MetadataField[];
 }
+
+export interface UpdateDataSourcePayload {
+  name?: string;
+  sourcetype?: 'File' | 'Text';
+  autoExtract?: boolean;
+  metadataFields?: MetadataField[];
+}
