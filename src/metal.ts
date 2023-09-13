@@ -179,6 +179,28 @@ export class Metal implements Client {
     return data
   }
 
+  async getMany(ids: string[], indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+
+    if (ids?.length > 100 || ids?.length < 1) {
+      throw new Error('ids should be between 1 and 100')
+    }
+
+    if (!index) {
+      throw new Error('indexId required')
+    }
+
+    const data = await request(`${API_URL}/v1/indexes/${index}/documents/${ids.join(',')}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
   async deleteOne(id: string, indexId?: string): Promise<object> {
     const index = indexId ?? (this.indexId as string)
 
