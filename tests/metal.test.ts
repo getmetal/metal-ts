@@ -523,6 +523,41 @@ describe('Metal', () => {
     })
   })
 
+  describe('getMany()', () => {
+    it('should error without `ids`', async () => {
+      const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
+      const result = metal.getMany([])
+      await expect(result).rejects.toThrowError('ids should be between 1 and 100')
+    })
+
+    it('should error without `indexId`', async () => {
+      const metal = new Metal(API_KEY, CLIENT_ID)
+      const result = metal.getMany(['123', '456'])
+
+      await expect(result).rejects.toThrowError('indexId required')
+    })
+
+    it('should get one by id', async () => {
+      const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
+
+      fetchMock.mockImplementationOnce(
+        getMockRes([
+          { id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } },
+          { id: 'ironmaiden', metadata: { vocalist: 'Bruce' } },
+        ])
+      )
+
+      await metal.getMany(['megadeth', 'ironmaiden'])
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth,ironmaiden`,
+        {
+          headers: HEADERS,
+        }
+      )
+    })
+  })
+
   describe('deleteOne()', () => {
     it('should error without `id`', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
