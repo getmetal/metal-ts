@@ -143,7 +143,7 @@ export interface MetadataField {
   description: string
 }
 
-export interface CreateDatasourcePayload {
+export interface addDatasourcePayload {
   name: string
   sourcetype: 'File' | 'Text'
   autoExtract: boolean
@@ -155,4 +155,16 @@ export interface UpdateDatasourcePayload {
   sourcetype?: 'File' | 'Text'
   autoExtract?: boolean
   metadataFields?: MetadataField[]
+}
+
+export interface FiltersField {
+  field?: string
+  type?: string
+}
+
+export interface CreateIndexPayload {
+  model?: string
+  datasource?: string
+  name?: string
+  filters?: FiltersField[]
 }

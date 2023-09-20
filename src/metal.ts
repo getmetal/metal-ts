@@ -17,8 +17,9 @@ import {
   type UploadFileToUrlPayload,
   type UploadFilePayload,
   type CreateFileResouceResponse,
-  type CreateDatasourcePayload,
+  type addDatasourcePayload,
   type UpdateDatasourcePayload,
+  type CreateIndexPayload,
 } from './types'
 
 export class Metal implements Client {
@@ -324,7 +325,7 @@ export class Metal implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 
-  async createDatasource(payload: CreateDatasourcePayload): Promise<object> {
+  async addDatasource(payload: addDatasourcePayload): Promise<object> {
     if (!payload.name) {
       throw new Error('name required')
     }
@@ -471,6 +472,95 @@ export class Metal implements Client {
     const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
     const data = await request(url, {
       method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  private async addDataEntityResource(
+    datasource: string,
+    fileName: string,
+    fileSize: number
+  ): Promise<any> {
+    const url = `${API_URL}/v1/data-entities`
+    const body = {
+      datasource,
+      name: sanitizeFilename(fileName),
+      sourceType: 'file',
+      status: 'active',
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-metal-file-size': fileSize.toString(),
+      'x-metal-api-key': this.apiKey,
+      'x-metal-client-id': this.clientId,
+    }
+
+    return await request(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers,
+    })
+  }
+
+  async addDataEntity(input: any): Promise<object> {
+    console.log(input)
+    const { datasource, filePath } = input
+    if (!datasource) {
+      throw new Error("Payload must contain a 'datasource' id")
+    }
+
+    let fileType: string
+    let fileSize: number
+    let fileName: string
+    let fileData: Buffer | File
+
+    if (typeof filePath === 'string') {
+      const fs = await import('fs')
+      const path = await import('path')
+      fileType = mime.lookup(filePath) || ''
+      fileSize = fs.statSync(filePath).size
+      fileName = path.basename(filePath)
+      fileData = fs.readFileSync(filePath)
+    } else {
+      const fileObject = filePath as { type?: string; size: number; name: string }
+      fileType = fileObject.type ?? ''
+      fileSize = fileObject.size
+      fileName = fileObject.name
+      fileData = fileObject as any
+    }
+
+    const dataEntityResource = await this.addDataEntityResource(datasource, fileName, fileSize)
+
+    if (!dataEntityResource?.url) {
+      throw new Error('Failed to create a data entity resource.')
+    }
+
+    // Upload the file to the returned URL
+    return await this.uploadFileToUrl({
+      url: dataEntityResource.url,
+      file: fileData,
+      fileType,
+      fileSize,
+    })
+  }
+
+  async addIndex(payload: CreateIndexPayload): Promise<object> {
+    if (!payload.name) {
+      throw new Error('Index name is required in payload')
+    }
+    const body: CreateIndexPayload = {
+      ...payload,
+    }
+    const data = await request(`${API_URL}/v1/indexes`, {
+      method: 'POST',
+      body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',
         'x-metal-api-key': this.apiKey,

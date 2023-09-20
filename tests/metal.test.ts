@@ -725,16 +725,16 @@ describe('Metal', () => {
       })
     })
 
-    describe('createDatasource()', () => {
+    describe('addDatasource()', () => {
       it('should error without name', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
-        const result = metal.createDatasource({ sourcetype: 'File', autoExtract: true } as any)
+        const result = metal.addDatasource({ sourcetype: 'File', autoExtract: true } as any)
         await expect(result).rejects.toThrowError('name required')
       })
 
       it('should error without sourcetype', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
-        const result = metal.createDatasource({ name: 'Test DataSource', autoExtract: true } as any)
+        const result = metal.addDatasource({ name: 'Test DataSource', autoExtract: true } as any)
         await expect(result).rejects.toThrowError('sourcetype required')
       })
 
@@ -748,7 +748,7 @@ describe('Metal', () => {
 
         fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.createDatasource(payload)
+        await metal.addDatasource(payload)
 
         expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/datasources', {
           method: 'POST',
@@ -767,7 +767,7 @@ describe('Metal', () => {
 
         fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.createDatasource(payload)
+        await metal.addDatasource(payload)
 
         expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/datasources', {
           method: 'POST',
@@ -787,7 +787,7 @@ describe('Metal', () => {
         fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
 
         await metal
-          .createDatasource(payload)
+          .addDatasource(payload)
           .then(() => {
             throw new Error('should not resolve')
           })
@@ -985,6 +985,43 @@ describe('Metal', () => {
       })
     })
 
+    describe('addDataEntity()', () => {
+      it('handles file paths', async () => {
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock
+          .mockResolvedValueOnce(new Response(JSON.stringify({ url: 'https://mocked.url/upload' })))
+          .mockResolvedValueOnce(new Response(JSON.stringify({})))
+
+        const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
+        const datasourceId = 'some-datasource-id'
+
+        await metal.addDataEntity({
+          datasource: datasourceId,
+          filePath,
+        })
+
+        expect(fetchMock.mock.calls[0][0]).toEqual(`https://api.getmetal.io/v1/data-entities`)
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'POST',
+          body: JSON.stringify({
+            datasource: datasourceId,
+            name: 'sample.csv',
+            sourceType: 'file',
+            status: 'active',
+          }),
+          headers: expect.any(Object),
+        })
+
+        expect(fetchMock.mock.calls[1][0]).toEqual('https://mocked.url/upload')
+        expect(fetchMock.mock.calls[1][1]).toEqual({
+          method: 'PUT',
+          body: expect.any(Buffer),
+          headers: expect.any(Object),
+        })
+      })
+    })
+
     describe('getDataEntity()', () => {
       it('should error without id', async () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
@@ -1162,6 +1199,40 @@ describe('Metal', () => {
             headers: HEADERS,
           }
         )
+      })
+    })
+
+    describe('addIndex()', () => {
+      it('should add an index with payload', async () => {
+        const mockIndexName = 'test_index'
+        const mockDatasource = 'test_datasource'
+        const mockModel = 'test_model'
+        const mockFilters = [{ field: 'test_field', operator: 'equals', value: 'test_value' }]
+
+        const payload = {
+          model: mockModel,
+          datasource: mockDatasource,
+          name: mockIndexName,
+          filters: mockFilters,
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(
+          new Response('', {
+            status: 201,
+          })
+        )
+
+        await metal.addIndex(payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/indexes')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: HEADERS,
+        })
       })
     })
   })

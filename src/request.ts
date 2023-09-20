@@ -19,11 +19,19 @@ class FetchError extends Error {
 
 export async function request(url: string, options: RequestInit): Promise<any> {
   const response: Response = await fetch(url, options)
-  const data: ServerResponse = await response.json()
+
+  let data: ServerResponse | null = null
+
+  try {
+    data = await response.json()
+  } catch (error) {}
 
   if (!response.ok) {
-    const errMsg = `Error status code: ${response.status}. ${data.message ?? ''}`.trim()
-    const err = new FetchError(errMsg, response, response.status, data.message)
+    const errMsg = data?.message
+      ? `Error status code: ${response.status}. ${data.message}`
+      : `Error status code: ${response.status}.`
+
+    const err = new FetchError(errMsg, response, response.status, data?.message)
     throw err
   }
 
