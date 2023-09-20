@@ -17,8 +17,8 @@ import {
   type UploadFileToUrlPayload,
   type UploadFilePayload,
   type CreateFileResouceResponse,
-  type CreateDataSourcePayload,
-  type UpdateDataSourcePayload,
+  type CreateDatasourcePayload,
+  type UpdateDatasourcePayload,
 } from './types'
 
 export class Metal implements Client {
@@ -324,7 +324,14 @@ export class Metal implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 
-  async createDataSource(payload: CreateDataSourcePayload): Promise<object> {
+  async createDatasource(payload: CreateDatasourcePayload): Promise<object> {
+      if (!payload.name) {
+        throw new Error('name required');
+    }
+
+    if (!payload.sourcetype) {
+        throw new Error('sourcetype required');
+    }
     const url = `${API_URL}/v1/datasources`
     const data = await request(url, {
       method: 'POST',
@@ -339,7 +346,7 @@ export class Metal implements Client {
     return data
   }
 
-  async getDataSource(id: string): Promise<object> {
+  async getDatasource(id: string): Promise<object> {
     if (!id) {
       throw new Error('id required')
     }
@@ -357,7 +364,7 @@ export class Metal implements Client {
     return data
   }
 
-  async getAllDataSources(limit?: number, page?: number): Promise<object> {
+  async getAllDatasources(limit?: number, page?: number): Promise<object> {
     const params = new URLSearchParams()
     if (limit) params.append('limit', limit.toString())
     if (page) params.append('page', page.toString())
@@ -375,7 +382,7 @@ export class Metal implements Client {
     return data
   }
 
-  async deleteDataSource(id: string): Promise<void> {
+  async deleteDatasource(id: string): Promise<void> {
     if (!id) {
       throw new Error('id required')
     }
@@ -395,7 +402,7 @@ export class Metal implements Client {
     }
   }
 
-  async updateDataSource(id: string, payload: UpdateDataSourcePayload): Promise<object> {
+  async updateDatasource(id: string, payload: UpdateDatasourcePayload): Promise<object> {
     if (!id) {
       throw new Error('id required')
     }
@@ -458,8 +465,8 @@ export class Metal implements Client {
     }
 
     const params = new URLSearchParams()
-    if (limit) params.append('limit', limit.toString())
-    if (page) params.append('page', page.toString())
+    if (limit !== undefined) params.append('limit', limit.toString());
+    if (page !== undefined) params.append('page', page.toString());
 
     const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
     const data = await request(url, {

@@ -143,14 +143,14 @@ export interface MetadataField {
   description: string
 }
 
-export interface CreateDataSourcePayload {
+export interface CreateDatasourcePayload {
   name: string
   sourcetype: 'File' | 'Text'
   autoExtract: boolean
   metadataFields?: MetadataField[]
 }
 
-export interface UpdateDataSourcePayload {
+export interface UpdateDatasourcePayload {
   name?: string
   sourcetype?: 'File' | 'Text'
   autoExtract?: boolean
