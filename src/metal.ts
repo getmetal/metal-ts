@@ -325,12 +325,12 @@ export class Metal implements Client {
   }
 
   async createDatasource(payload: CreateDatasourcePayload): Promise<object> {
-      if (!payload.name) {
-        throw new Error('name required');
+    if (!payload.name) {
+      throw new Error('name required')
     }
 
     if (!payload.sourcetype) {
-        throw new Error('sourcetype required');
+      throw new Error('sourcetype required')
     }
     const url = `${API_URL}/v1/datasources`
     const data = await request(url, {
@@ -465,8 +465,8 @@ export class Metal implements Client {
     }
 
     const params = new URLSearchParams()
-    if (limit !== undefined) params.append('limit', limit.toString());
-    if (page !== undefined) params.append('page', page.toString());
+    if (limit !== undefined) params.append('limit', limit.toString())
+    if (page !== undefined) params.append('page', page.toString())
 
     const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
     const data = await request(url, {

@@ -726,153 +726,141 @@ describe('Metal', () => {
     })
 
     describe('createDatasource()', () => {
-
       it('should error without name', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const result = metal.createDatasource({ sourcetype: 'File', autoExtract: true } as any);
-        await expect(result).rejects.toThrowError('name required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const result = metal.createDatasource({ sourcetype: 'File', autoExtract: true } as any)
+        await expect(result).rejects.toThrowError('name required')
+      })
 
       it('should error without sourcetype', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const result = metal.createDatasource({ name: 'Test DataSource', autoExtract: true } as any);
-        await expect(result).rejects.toThrowError('sourcetype required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const result = metal.createDatasource({ name: 'Test DataSource', autoExtract: true } as any)
+        await expect(result).rejects.toThrowError('sourcetype required')
+      })
 
       it('should send correct payload with File sourcetype', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
           sourcetype: 'File' as 'File',
-          autoExtract: true
-        };
+          autoExtract: true,
+        }
 
-        fetchMock.mockImplementationOnce(getMockRes(null));
+        fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.createDatasource(payload);
+        await metal.createDatasource(payload)
 
         expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/datasources', {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: HEADERS,
-        });
-      });
+        })
+      })
 
       it('should send correct payload with Text sourcetype', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
           sourcetype: 'Text' as 'Text',
-          autoExtract: false
-        };
+          autoExtract: false,
+        }
 
-        fetchMock.mockImplementationOnce(getMockRes(null));
+        fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.createDatasource(payload);
+        await metal.createDatasource(payload)
 
         expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/datasources', {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: HEADERS,
-        });
-      });
+        })
+      })
 
       it('should handle error and reject', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
           sourcetype: 'File' as 'File',
-          autoExtract: true
-        };
+          autoExtract: true,
+        }
 
-        fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400));
+        fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
 
         await metal
           .createDatasource(payload)
           .then(() => {
-            throw new Error('should not resolve');
+            throw new Error('should not resolve')
           })
           .catch((err) => {
-            expect(err.message).toBe('Error status code: 400.');
-          });
+            expect(err.message).toBe('Error status code: 400.')
+          })
 
         expect(fetchMock).toHaveBeenCalledWith('https://api.getmetal.io/v1/datasources', {
           method: 'POST',
           body: JSON.stringify(payload),
           headers: HEADERS,
-        });
-      });
-
-    });
-
-
+        })
+      })
+    })
 
     describe('getDatasource()', () => {
       it('should error without `id`', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
         // @ts-expect-error testing
-        const result = metal.getDatasource();
-        await expect(result).rejects.toThrowError('id required');
-      });
+        const result = metal.getDatasource()
+        await expect(result).rejects.toThrowError('id required')
+      })
 
       it('should get a datasource by id', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const mockId = '1234';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const mockId = '1234'
 
-        fetchMock.mockImplementationOnce(
-          getMockRes({ id: mockId, name: 'Some Datasource' })
-        );
+        fetchMock.mockImplementationOnce(getMockRes({ id: mockId, name: 'Some Datasource' }))
 
-        await metal.getDatasource(mockId);
+        await metal.getDatasource(mockId)
 
-        expect(fetchMock).toHaveBeenCalledWith(
-          `https://api.getmetal.io/v1/datasources/${mockId}`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': API_KEY,
-              'x-metal-client-id': CLIENT_ID,
-            },
-          }
-        );
-      });
-    });
-
+        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${mockId}`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
+    })
 
     describe('getAllDatasources()', () => {
       it('should get all datasources without parameters', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
 
         fetchMock.mockImplementationOnce(
-          getMockRes([{ id: '1', name: 'Datasource1' }, { id: '2', name: 'Datasource2' }])
-        );
+          getMockRes([
+            { id: '1', name: 'Datasource1' },
+            { id: '2', name: 'Datasource2' },
+          ])
+        )
 
-        await metal.getAllDatasources();
+        await metal.getAllDatasources()
 
-        expect(fetchMock).toHaveBeenCalledWith(
-          `https://api.getmetal.io/v1/datasources?`,
-          {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json',
-              'x-metal-api-key': API_KEY,
-              'x-metal-client-id': CLIENT_ID,
-            },
-          }
-        );
-      });
+        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources?`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
 
       it('should get all datasources with limit and page parameters', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const mockLimit = 10;
-        const mockPage = 2;
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const mockLimit = 10
+        const mockPage = 2
 
-        fetchMock.mockImplementationOnce(
-          getMockRes([{ id: '3', name: 'Datasource3' }])
-        );
+        fetchMock.mockImplementationOnce(getMockRes([{ id: '3', name: 'Datasource3' }]))
 
-        await metal.getAllDatasources(mockLimit, mockPage);
+        await metal.getAllDatasources(mockLimit, mockPage)
 
         expect(fetchMock).toHaveBeenCalledWith(
           `https://api.getmetal.io/v1/datasources?limit=${mockLimit}&page=${mockPage}`,
@@ -884,289 +872,297 @@ describe('Metal', () => {
               'x-metal-client-id': CLIENT_ID,
             },
           }
-        );
-      });
-    });
+        )
+      })
+    })
 
     describe('deleteDatasource()', () => {
-      const API_URL = 'https://api.getmetal.io';
+      const API_URL = 'https://api.getmetal.io'
       const HEADERS = {
         'Content-Type': 'application/json',
         'x-metal-api-key': API_KEY,
         'x-metal-client-id': CLIENT_ID,
-      };
+      }
 
       it('should error without `id`', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
 
         // @ts-expect-error testing
-        const result = metal.deleteDatasource();
+        const result = metal.deleteDatasource()
 
-        await expect(result).rejects.toThrowError('id required');
-      });
+        await expect(result).rejects.toThrowError('id required')
+      })
 
       it('should delete datasource by id', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
 
-        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }));
+        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({}), { status: 200 }))
 
-        await metal.deleteDatasource('datasource-id');
+        await metal.deleteDatasource('datasource-id')
 
-        expect(fetchMock).toHaveBeenCalledWith(
-          `${API_URL}/v1/datasources/datasource-id`,
-          {
-            method: 'DELETE',
-            headers: HEADERS,
-          }
-        );
-      });
+        expect(fetchMock).toHaveBeenCalledWith(`${API_URL}/v1/datasources/datasource-id`, {
+          method: 'DELETE',
+          headers: HEADERS,
+        })
+      })
 
       it('should throw error if response is not ok', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
 
-        fetchMock.mockResolvedValueOnce(new Response('Error message', { status: 404, statusText: 'Not Found' }));
+        fetchMock.mockResolvedValueOnce(
+          new Response('Error message', { status: 404, statusText: 'Not Found' })
+        )
 
-        const result = metal.deleteDatasource('datasource-id');
+        const result = metal.deleteDatasource('datasource-id')
 
-        await expect(result).rejects.toThrowError('Error deleting data source: Not Found');
-      });
-    });
+        await expect(result).rejects.toThrowError('Error deleting data source: Not Found')
+      })
+    })
 
     describe('updateDatasource()', () => {
-
       it('should error without id', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        await expect(async () => await metal.updateDatasource('', {}))
-          .rejects.toThrowError('id required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        await expect(async () => await metal.updateDatasource('', {})).rejects.toThrowError(
+          'id required'
+        )
+      })
 
       it('should send update with empty payload', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleID'
 
-        fetchMock.mockImplementationOnce(getMockRes(null));
+        fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.updateDatasource(id, {});
+        await metal.updateDatasource(id, {})
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${id}`, {
           method: 'PUT',
           body: JSON.stringify({}),
           headers: HEADERS,
-        });
-      });
+        })
+      })
 
       it('should send correct update with filled payload', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
+        const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Updated Data Source',
           sourcetype: 'Text' as 'Text',
-          autoExtract: true
-        };
-        const id = 'sampleID';
+          autoExtract: true,
+        }
+        const id = 'sampleID'
 
-        fetchMock.mockImplementationOnce(getMockRes(null));
+        fetchMock.mockImplementationOnce(getMockRes(null))
 
-        await metal.updateDatasource(id, payload);
+        await metal.updateDatasource(id, payload)
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${id}`, {
           method: 'PUT',
           body: JSON.stringify(payload),
           headers: HEADERS,
-        });
-      });
+        })
+      })
 
       it('should handle error and reject', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleID'
 
-        fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400));
+        fetchMock.mockImplementationOnce(getMockRes({ message: 'bad param' }, false, 400))
 
         await metal
           .updateDatasource(id, {})
           .then(() => {
-            throw new Error('should not resolve');
+            throw new Error('should not resolve')
           })
           .catch((err) => {
-            expect(err.message).toBe('Error status code: 400.');
-          });
+            expect(err.message).toBe('Error status code: 400.')
+          })
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${id}`, {
           method: 'PUT',
           body: JSON.stringify({}),
           headers: HEADERS,
-        });
-      });
-
-    });
+        })
+      })
+    })
 
     describe('getDataEntity()', () => {
-
       it('should error without id', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        await expect(async () => await metal.getDataEntity(''))
-          .rejects.toThrowError('id required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        await expect(async () => await metal.getDataEntity('')).rejects.toThrowError('id required')
+      })
 
       it('should fetch data entity correctly', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleEntityID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleEntityID'
         const mockEntity = {
           name: 'Sample Data Entity',
-          description: 'Sample description'
+          description: 'Sample description',
           // Add other mock fields as necessary
-        };
+        }
 
-        fetchMock.mockImplementationOnce(getMockRes(mockEntity));
+        fetchMock.mockImplementationOnce(getMockRes(mockEntity))
 
-        const response = await metal.getDataEntity(id);
+        const response = await metal.getDataEntity(id)
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/data-entities/${id}`, {
           method: 'GET',
           headers: HEADERS,
-        });
+        })
 
-        expect(response).toEqual(mockEntity);
-      });
+        expect(response).toEqual(mockEntity)
+      })
 
       it('should handle error and reject', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleEntityID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleEntityID'
 
-        fetchMock.mockImplementationOnce(getMockRes({ message: 'Entity not found' }, false, 404));
+        fetchMock.mockImplementationOnce(getMockRes({ message: 'Entity not found' }, false, 404))
 
         await metal
           .getDataEntity(id)
           .then(() => {
-            throw new Error('should not resolve');
+            throw new Error('should not resolve')
           })
           .catch((err) => {
-            expect(err.message).toBe('Error status code: 404.');
-          });
+            expect(err.message).toBe('Error status code: 404.')
+          })
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/data-entities/${id}`, {
           method: 'GET',
           headers: HEADERS,
-        });
-      });
-
-    });
+        })
+      })
+    })
 
     describe('deleteDataEntity()', () => {
-
       it('should error without id', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        await expect( () => metal.deleteDataEntity('') as any)
-          .rejects.toThrowError('id required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        await expect(() => metal.deleteDataEntity('') as any).rejects.toThrowError('id required')
+      })
 
       it('should delete data entity correctly', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleEntityID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleEntityID'
 
-        fetchMock.mockImplementationOnce(jest.fn().mockReturnValue({
-          ok: true,
-          status: 200,
-          json: async () => await Promise.resolve({}),
-        }));
+        fetchMock.mockImplementationOnce(
+          jest.fn().mockReturnValue({
+            ok: true,
+            status: 200,
+            json: async () => await Promise.resolve({}),
+          })
+        )
 
-        await metal.deleteDataEntity(id);
+        await metal.deleteDataEntity(id)
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/data-entities/${id}`, {
           method: 'DELETE',
           headers: HEADERS,
-        });
-      });
+        })
+      })
 
       it('should handle error when deleting', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const id = 'sampleEntityID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const id = 'sampleEntityID'
 
-        fetchMock.mockImplementationOnce(jest.fn().mockReturnValue({
-          ok: false,
-          status: 404,
-          statusText: 'Entity not found',
-          json: async () => await Promise.resolve({}),
-        }));
+        fetchMock.mockImplementationOnce(
+          jest.fn().mockReturnValue({
+            ok: false,
+            status: 404,
+            statusText: 'Entity not found',
+            json: async () => await Promise.resolve({}),
+          })
+        )
 
-        await expect(async() => {await metal.deleteDataEntity(id)})
-          .rejects.toThrowError('Error deleting data entity: Entity not found');
+        await expect(async () => {
+          await metal.deleteDataEntity(id)
+        }).rejects.toThrowError('Error deleting data entity: Entity not found')
 
         expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/data-entities/${id}`, {
           method: 'DELETE',
           headers: HEADERS,
-        });
-      });
-    });
+        })
+      })
+    })
 
     describe('getAllDataEntities()', () => {
-
       it('should error without datasourceId', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        await expect(async () => await metal.getAllDataEntities(''))
-          .rejects.toThrowError('id required');
-      });
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        await expect(async () => await metal.getAllDataEntities('')).rejects.toThrowError(
+          'id required'
+        )
+      })
 
       it('should fetch data entities without pagination', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const datasourceId = 'sampleDatasourceID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const datasourceId = 'sampleDatasourceID'
 
-        fetchMock.mockImplementationOnce(jest.fn().mockReturnValue({
-          ok: true,
-          status: 200,
-          json: async () => await Promise.resolve({ data: [] }),
-        }));
+        fetchMock.mockImplementationOnce(
+          jest.fn().mockReturnValue({
+            ok: true,
+            status: 200,
+            json: async () => await Promise.resolve({ data: [] }),
+          })
+        )
 
-        await metal.getAllDataEntities(datasourceId);
+        await metal.getAllDataEntities(datasourceId)
 
-        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?`, {
-          method: 'GET',
-          headers: HEADERS,
-        });
-      });
+        expect(fetchMock).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?`,
+          {
+            method: 'GET',
+            headers: HEADERS,
+          }
+        )
+      })
 
       it('should fetch data entities with pagination', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const datasourceId = 'sampleDatasourceID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const datasourceId = 'sampleDatasourceID'
 
-        fetchMock.mockImplementationOnce(jest.fn().mockReturnValue({
-          ok: true,
-          status: 200,
-          json: async () => await Promise.resolve({ data: [] }),
-        }));
+        fetchMock.mockImplementationOnce(
+          jest.fn().mockReturnValue({
+            ok: true,
+            status: 200,
+            json: async () => await Promise.resolve({ data: [] }),
+          })
+        )
 
-        await metal.getAllDataEntities(datasourceId, 10, 2);
+        await metal.getAllDataEntities(datasourceId, 10, 2)
 
-        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?limit=10&page=2`, {
-          method: 'GET',
-          headers: HEADERS,
-        });
-      });
+        expect(fetchMock).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?limit=10&page=2`,
+          {
+            method: 'GET',
+            headers: HEADERS,
+          }
+        )
+      })
 
       it('should handle fetch error', async () => {
-        const metal = new Metal(API_KEY, CLIENT_ID);
-        const datasourceId = 'sampleDatasourceID';
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const datasourceId = 'sampleDatasourceID'
 
-        fetchMock.mockImplementationOnce(jest.fn().mockReturnValue({
-          ok: false,
-          status: 400,
-          statusText: 'Bad Request',
-          json: async () => await Promise.resolve({ message: 'Invalid query parameters' }),
-        }));
+        fetchMock.mockImplementationOnce(
+          jest.fn().mockReturnValue({
+            ok: false,
+            status: 400,
+            statusText: 'Bad Request',
+            json: async () => await Promise.resolve({ message: 'Invalid query parameters' }),
+          })
+        )
 
-        await expect(async () => await metal.getAllDataEntities(datasourceId, 0, -1))
-          .rejects.toThrowError('Error status code: 400. Invalid query parameters');
+        await expect(
+          async () => await metal.getAllDataEntities(datasourceId, 0, -1)
+        ).rejects.toThrowError('Error status code: 400. Invalid query parameters')
 
-        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?limit=0&page=-1`, {
-          method: 'GET',
-          headers: HEADERS,
-        });
-      });
-    });
-
-
-
-
-
-
+        expect(fetchMock).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/datasources/${datasourceId}/data-entities?limit=0&page=-1`,
+          {
+            method: 'GET',
+            headers: HEADERS,
+          }
+        )
+      })
+    })
   })
 })
