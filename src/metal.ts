@@ -17,7 +17,7 @@ import {
   type UploadFileToUrlPayload,
   type UploadFilePayload,
   type CreateFileResouceResponse,
-  type addDatasourcePayload,
+  type AddDatasourcePayload,
   type UpdateDatasourcePayload,
   type CreateIndexPayload,
 } from './types'
@@ -325,7 +325,7 @@ export class Metal implements Client {
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
   }
 
-  async addDatasource(payload: addDatasourcePayload): Promise<object> {
+  async addDatasource(payload: AddDatasourcePayload): Promise<object> {
     if (!payload.name) {
       throw new Error('name required')
     }
