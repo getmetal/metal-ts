@@ -106,3 +106,7 @@ dist
 .cert
 
 metalsheets.json
+
+# vs code
+.history
+example.js

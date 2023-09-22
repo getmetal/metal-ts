@@ -136,3 +136,35 @@ export interface FilePayload {
 export interface CreateFileResouceResponse {
   url: string
 }
+
+export interface MetadataField {
+  name: string
+  type: string | number
+  description: string
+}
+
+export interface AddDatasourcePayload {
+  name: string
+  sourcetype: 'File' | 'Text'
+  autoExtract: boolean
+  metadataFields?: MetadataField[]
+}
+
+export interface UpdateDatasourcePayload {
+  name?: string
+  sourcetype?: 'File' | 'Text'
+  autoExtract?: boolean
+  metadataFields?: MetadataField[]
+}
+
+export interface FiltersField {
+  field?: string
+  type?: string
+}
+
+export interface CreateIndexPayload {
+  model?: string
+  datasource?: string
+  name?: string
+  filters?: FiltersField[]
+}

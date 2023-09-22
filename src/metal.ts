@@ -17,6 +17,9 @@ import {
   type UploadFileToUrlPayload,
   type UploadFilePayload,
   type CreateFileResouceResponse,
+  type AddDatasourcePayload,
+  type UpdateDatasourcePayload,
+  type CreateIndexPayload,
 } from './types'
 
 export class Metal implements Client {
@@ -320,6 +323,252 @@ export class Metal implements Client {
     const resource = await this.createResource({ indexId: index, fileName, fileType, fileSize })
 
     return await this.uploadFileToUrl({ url: resource.url, file: fileData, fileType, fileSize })
+  }
+
+  async addDatasource(payload: AddDatasourcePayload): Promise<object> {
+    if (!payload.name) {
+      throw new Error('name required')
+    }
+
+    if (!payload.sourcetype) {
+      throw new Error('sourcetype required')
+    }
+    const url = `${API_URL}/v1/datasources`
+    const data = await request(url, {
+      method: 'POST',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async getDatasource(id: string): Promise<object> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const url = `${API_URL}/v1/datasources/${id}`
+    const data = await request(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async getAllDatasources(limit?: number, page?: number): Promise<object> {
+    const params = new URLSearchParams()
+    if (limit) params.append('limit', limit.toString())
+    if (page) params.append('page', page.toString())
+
+    const url = `${API_URL}/v1/datasources?${params.toString()}`
+    const data = await request(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async deleteDatasource(id: string): Promise<void> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const url = `${API_URL}/v1/datasources/${id}`
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error deleting data source: ${response.statusText}`)
+    }
+  }
+
+  async updateDatasource(id: string, payload: UpdateDatasourcePayload): Promise<object> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const url = `${API_URL}/v1/datasources/${id}`
+    const data = await request(url, {
+      method: 'PUT',
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async getDataEntity(id: string): Promise<object> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const url = `${API_URL}/v1/data-entities/${id}`
+    const data = await request(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async deleteDataEntity(id: string): Promise<void> {
+    if (!id) {
+      throw new Error('id required')
+    }
+
+    const url = `${API_URL}/v1/data-entities/${id}`
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error(`Error deleting data entity: ${response.statusText}`)
+    }
+  }
+
+  async getAllDataEntities(datasourceId: string, limit?: number, page?: number): Promise<object> {
+    if (!datasourceId) {
+      throw new Error('id required')
+    }
+
+    const params = new URLSearchParams()
+    if (limit !== undefined) params.append('limit', limit.toString())
+    if (page !== undefined) params.append('page', page.toString())
+
+    const url = `${API_URL}/v1/datasources/${datasourceId}/data-entities?${params.toString()}`
+    const data = await request(url, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  private async addDataEntityResource(
+    datasource: string,
+    fileName: string,
+    fileSize: number
+  ): Promise<any> {
+    const url = `${API_URL}/v1/data-entities`
+    const body = {
+      datasource,
+      name: sanitizeFilename(fileName),
+      sourceType: 'file',
+      status: 'active',
+    }
+
+    const headers = {
+      'Content-Type': 'application/json',
+      'x-metal-file-size': fileSize.toString(),
+      'x-metal-api-key': this.apiKey,
+      'x-metal-client-id': this.clientId,
+    }
+
+    return await request(url, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers,
+    })
+  }
+
+  async addDataEntity(input: any): Promise<object> {
+    console.log(input)
+    const { datasource, filePath } = input
+    if (!datasource) {
+      throw new Error("Payload must contain a 'datasource' id")
+    }
+
+    let fileType: string
+    let fileSize: number
+    let fileName: string
+    let fileData: Buffer | File
+
+    if (typeof filePath === 'string') {
+      const fs = await import('fs')
+      const path = await import('path')
+      fileType = mime.lookup(filePath) || ''
+      fileSize = fs.statSync(filePath).size
+      fileName = path.basename(filePath)
+      fileData = fs.readFileSync(filePath)
+    } else {
+      const fileObject = filePath as { type?: string; size: number; name: string }
+      fileType = fileObject.type ?? ''
+      fileSize = fileObject.size
+      fileName = fileObject.name
+      fileData = fileObject as any
+    }
+
+    const dataEntityResource = await this.addDataEntityResource(datasource, fileName, fileSize)
+
+    if (!dataEntityResource?.url) {
+      throw new Error('Failed to create a data entity resource.')
+    }
+
+    // Upload the file to the returned URL
+    return await this.uploadFileToUrl({
+      url: dataEntityResource.url,
+      file: fileData,
+      fileType,
+      fileSize,
+    })
+  }
+
+  async addIndex(payload: CreateIndexPayload): Promise<object> {
+    if (!payload.name) {
+      throw new Error('Index name is required in payload')
+    }
+    const body: CreateIndexPayload = {
+      ...payload,
+    }
+    const data = await request(`${API_URL}/v1/indexes`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
   }
 }
 
