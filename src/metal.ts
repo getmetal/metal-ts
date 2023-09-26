@@ -20,6 +20,7 @@ import {
   type AddDatasourcePayload,
   type UpdateDatasourcePayload,
   type CreateIndexPayload,
+  type AddDataEntityPayload,
 } from './types'
 
 export class Metal implements Client {
@@ -485,14 +486,15 @@ export class Metal implements Client {
   private async addDataEntityResource(
     datasource: string,
     fileName: string,
-    fileSize: number
+    fileSize: number,
+    metadata?: object
   ): Promise<any> {
     const url = `${API_URL}/v1/data-entities`
     const body = {
       datasource,
       name: sanitizeFilename(fileName),
       sourceType: 'file',
-      status: 'active',
+      metadata,
     }
 
     const headers = {
@@ -509,9 +511,8 @@ export class Metal implements Client {
     })
   }
 
-  async addDataEntity(input: any): Promise<object> {
-    console.log(input)
-    const { datasource, filePath } = input
+  async addDataEntity(payload: AddDataEntityPayload): Promise<object> {
+    const { datasource, filepath, metadata } = payload
     if (!datasource) {
       throw new Error("Payload must contain a 'datasource' id")
     }
@@ -521,22 +522,27 @@ export class Metal implements Client {
     let fileName: string
     let fileData: Buffer | File
 
-    if (typeof filePath === 'string') {
+    if (typeof filepath === 'string') {
       const fs = await import('fs')
       const path = await import('path')
-      fileType = mime.lookup(filePath) || ''
-      fileSize = fs.statSync(filePath).size
-      fileName = path.basename(filePath)
-      fileData = fs.readFileSync(filePath)
+      fileType = mime.lookup(filepath) || ''
+      fileSize = fs.statSync(filepath).size
+      fileName = path.basename(filepath)
+      fileData = fs.readFileSync(filepath)
     } else {
-      const fileObject = filePath as { type?: string; size: number; name: string }
+      const fileObject = filepath as { type?: string; size: number; name: string }
       fileType = fileObject.type ?? ''
       fileSize = fileObject.size
       fileName = fileObject.name
       fileData = fileObject as any
     }
 
-    const dataEntityResource = await this.addDataEntityResource(datasource, fileName, fileSize)
+    const dataEntityResource = await this.addDataEntityResource(
+      datasource,
+      fileName,
+      fileSize,
+      metadata
+    )
 
     if (!dataEntityResource?.url) {
       throw new Error('Failed to create a data entity resource.')

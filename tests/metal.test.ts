@@ -742,7 +742,7 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
-          sourcetype: 'File' as 'File',
+          sourcetype: 'file' as 'file',
           autoExtract: true,
         }
 
@@ -761,7 +761,7 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
-          sourcetype: 'Text' as 'Text',
+          sourcetype: 'text' as 'text',
           autoExtract: false,
         }
 
@@ -780,7 +780,7 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Sample Data Source',
-          sourcetype: 'File' as 'File',
+          sourcetype: 'file' as 'file',
           autoExtract: true,
         }
 
@@ -993,12 +993,15 @@ describe('Metal', () => {
           .mockResolvedValueOnce(new Response(JSON.stringify({ url: 'https://mocked.url/upload' })))
           .mockResolvedValueOnce(new Response(JSON.stringify({})))
 
-        const filePath = path.join(__dirname, 'fixtures', 'sample.csv')
+        const filepath = path.join(__dirname, 'fixtures', 'sample.csv')
         const datasourceId = 'some-datasource-id'
 
         await metal.addDataEntity({
           datasource: datasourceId,
-          filePath,
+          filepath,
+          metadata: {
+            vocalist: 'ozzy',
+          },
         })
 
         expect(fetchMock.mock.calls[0][0]).toEqual(`https://api.getmetal.io/v1/data-entities`)
@@ -1008,7 +1011,9 @@ describe('Metal', () => {
             datasource: datasourceId,
             name: 'sample.csv',
             sourceType: 'file',
-            status: 'active',
+            metadata: {
+              vocalist: 'ozzy',
+            },
           }),
           headers: expect.any(Object),
         })

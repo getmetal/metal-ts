@@ -145,9 +145,15 @@ export interface MetadataField {
 
 export interface AddDatasourcePayload {
   name: string
-  sourcetype: 'File' | 'Text'
+  sourcetype: 'file' | 'text'
   autoExtract: boolean
   metadataFields?: MetadataField[]
+}
+
+export interface AddDataEntityPayload {
+  datasource: string
+  filepath: string
+  metadata?: object
 }
 
 export interface UpdateDatasourcePayload {
