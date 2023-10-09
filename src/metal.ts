@@ -21,6 +21,7 @@ import {
   type UpdateDatasourcePayload,
   type CreateIndexPayload,
   type AddDataEntityPayload,
+  type UpdateIndexPayload,
 } from './types'
 
 export class Metal implements Client {
@@ -566,6 +567,28 @@ export class Metal implements Client {
     }
     const data = await request(`${API_URL}/v1/indexes`, {
       method: 'POST',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
+  async updateIndex(indexId: string, payload: UpdateIndexPayload): Promise<object> {
+    if (!indexId) {
+      throw new Error('Index id is required')
+    }
+
+    const body: UpdateIndexPayload = {
+      ...payload,
+    }
+
+    const data = await request(`${API_URL}/v1/indexes/${indexId}`, {
+      method: 'PUT',
       body: JSON.stringify(body),
       headers: {
         'Content-Type': 'application/json',

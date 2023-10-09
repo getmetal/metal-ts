@@ -158,7 +158,7 @@ export interface AddDataEntityPayload {
 
 export interface UpdateDatasourcePayload {
   name?: string
-  sourcetype?: 'File' | 'Text'
+  sourcetype?: 'file' | 'text'
   autoExtract?: boolean
   metadataFields?: MetadataField[]
 }
@@ -173,4 +173,8 @@ export interface CreateIndexPayload {
   datasource?: string
   name?: string
   filters?: FiltersField[]
+}
+
+export interface UpdateIndexPayload {
+  status: 'ARCHIVED' | 'UNARCHIVED'
 }
