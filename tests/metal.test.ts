@@ -1246,7 +1246,7 @@ describe('Metal', () => {
         const mockIndexId = 'test_index_id'
 
         const payload = {
-          status: 'ARCHIVED' as 'ARCHIVED',
+          status: 'DEACTIVATING' as 'DEACTIVATING',
         }
 
         const metal = new Metal(API_KEY, CLIENT_ID)

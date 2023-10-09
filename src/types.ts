@@ -176,5 +176,5 @@ export interface CreateIndexPayload {
 }
 
 export interface UpdateIndexPayload {
-  status: 'ARCHIVED' | 'UNARCHIVED'
+  status: 'DEACTIVATING' | 'UNARCHIVED'
 }
