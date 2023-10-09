@@ -946,7 +946,7 @@ describe('Metal', () => {
         const metal = new Metal(API_KEY, CLIENT_ID)
         const payload = {
           name: 'Updated Data Source',
-          sourcetype: 'Text' as 'Text',
+          sourcetype: 'text' as 'text',
           autoExtract: true,
         }
         const id = 'sampleID'
@@ -1223,7 +1223,7 @@ describe('Metal', () => {
 
         const metal = new Metal(API_KEY, CLIENT_ID)
 
-        ;(fetch as jest.MockedFunction<typeof fetch>).mockResolvedValueOnce(
+        fetchMock.mockResolvedValueOnce(
           new Response('', {
             status: 201,
           })
@@ -1235,6 +1235,34 @@ describe('Metal', () => {
         expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/indexes')
         expect(fetchMock.mock.calls[0][1]).toEqual({
           method: 'POST',
+          body: JSON.stringify(payload),
+          headers: HEADERS,
+        })
+      })
+    })
+
+    describe('updateIndex()', () => {
+      it('should update an index with payload', async () => {
+        const mockIndexId = 'test_index_id'
+
+        const payload = {
+          status: 'ARCHIVED' as 'ARCHIVED',
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 200,
+          })
+        )
+
+        await metal.updateIndex(mockIndexId, payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/indexes/test_index_id')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'PUT',
           body: JSON.stringify(payload),
           headers: HEADERS,
         })
