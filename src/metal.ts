@@ -617,7 +617,6 @@ export class Metal implements Client {
 
     return data
   }
-
 }
 
 export default Metal
