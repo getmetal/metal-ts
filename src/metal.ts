@@ -599,6 +599,25 @@ export class Metal implements Client {
 
     return data
   }
+
+  async getQueries(indexId?: string): Promise<object> {
+    const index = indexId ?? (this.indexId as string)
+
+    if (!index) {
+      throw new Error('indexId required')
+    }
+
+    const data = await request(`${API_URL}/v1/indexes/${index}/queries`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
+
+    return data
+  }
+
 }
 
 export default Metal
