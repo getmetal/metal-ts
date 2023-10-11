@@ -1268,5 +1268,36 @@ describe('Metal', () => {
         })
       })
     })
+
+    describe('getQueries()', () => {
+      it('should get queries for the provided indexId', async () => {
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        const mockData = {
+          data: [
+            {
+              t: '2023-08-30T11:34:35.128Z',
+              d: 0.176956892014,
+              q: 'Who is the best drummer of all time?',
+            },
+            {
+              t: '2023-08-29T11:34:18.099Z',
+              d: 0.156819581985,
+              q: 'Which band is represented by the iconic mascot Eddie?',
+            },
+          ],
+        }
+
+        fetchMock.mockImplementationOnce(getMockRes(mockData))
+
+        const response = await metal.getQueries('index-id')
+        expect(response).toEqual(mockData)
+        expect(fetchMock).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/indexes/index-id/queries`,
+          {
+            headers: HEADERS,
+          }
+        )
+      })
+    })
   })
 })
