@@ -621,7 +621,7 @@ export class Metal implements Client {
 
   async addApp(payload: CreateAppPayload): Promise<object> {
     if (!payload.name) {
-      throw new Error('App name is required in payload');
+      throw new Error('App name is required in payload')
     }
     const body: CreateAppPayload = {
       ...payload,
@@ -634,9 +634,9 @@ export class Metal implements Client {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
 
   async getAllApps(): Promise<object> {
@@ -647,17 +647,17 @@ export class Metal implements Client {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
 
   async getApp(appId: string): Promise<object> {
     if (!appId) {
-      throw new Error('App ID is required');
+      throw new Error('App ID is required')
     }
     if (appId.length !== 24) {
-      throw new Error('App ID must have a length of 24 characters');
+      throw new Error('App ID must have a length of 24 characters')
     }
 
     const data = await request(`${API_URL}/v1/apps/${appId}`, {
@@ -667,14 +667,10 @@ export class Metal implements Client {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
-    return data;
+    return data
   }
-
-
 }
-
-
 
 export default Metal
