@@ -1332,7 +1332,7 @@ describe('Metal', () => {
       })
     })
 
-    describe('getAllApps()', () => {
+    describe('getApps()', () => {
       it('should fetch all apps', async () => {
         const mockAppsResponse = [
           { id: 'app1', name: 'App 1' },
@@ -1347,7 +1347,7 @@ describe('Metal', () => {
           })
         )
 
-        const apps = await metal.getAllApps()
+        const apps = await metal.getApps()
 
         expect(apps).toEqual(mockAppsResponse)
         expect(fetchMock).toHaveBeenCalledTimes(1)

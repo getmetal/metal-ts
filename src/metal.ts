@@ -639,7 +639,7 @@ export class Metal implements Client {
     return data
   }
 
-  async getAllApps(): Promise<object> {
+  async getApps(): Promise<object> {
     const data = await request(`${API_URL}/v1/apps`, {
       method: 'GET',
       headers: {
