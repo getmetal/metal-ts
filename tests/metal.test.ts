@@ -1299,5 +1299,112 @@ describe('Metal', () => {
         )
       })
     })
+
+    describe('addApp()', () => {
+      it('should add an app with payload', async () => {
+        const mockAppName = 'test_app'
+
+        const payload = {
+          name: mockAppName,
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 201,
+          })
+        )
+
+        await metal.addApp(payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
+    })
+
+    describe('getApps()', () => {
+      it('should fetch all apps', async () => {
+        const mockAppsResponse = [
+          { id: 'app1', name: 'App 1' },
+          { id: 'app2', name: 'App 2' },
+        ]
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response(JSON.stringify(mockAppsResponse), {
+            status: 200,
+          })
+        )
+
+        const apps = await metal.getApps()
+
+        expect(apps).toEqual(mockAppsResponse)
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
+    })
+
+    describe('getApp()', () => {
+      it('should fetch a single app by its ID', async () => {
+        const mockAppId = 'a'.repeat(24) // Mock app ID of length 24
+        const mockAppResponse = {
+          data: {
+            id: mockAppId,
+            name: 'Mock App',
+          },
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response(JSON.stringify(mockAppResponse), {
+            status: 200,
+          })
+        )
+
+        const app = await metal.getApp(mockAppId)
+
+        expect(app).toEqual(mockAppResponse.data)
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe(`https://api.getmetal.io/v1/apps/${mockAppId}`)
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
+
+      it('should throw an error if app ID is not 24 characters long', async () => {
+        const invalidAppId = 'shortId'
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        await expect(metal.getApp(invalidAppId)).rejects.toThrow(
+          'App ID must have a length of 24 characters'
+        )
+      })
+    })
   })
 })

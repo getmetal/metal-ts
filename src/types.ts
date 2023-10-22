@@ -178,3 +178,7 @@ export interface CreateIndexPayload {
 export interface UpdateIndexPayload {
   status: 'DEACTIVATING' | 'UNARCHIVED'
 }
+
+export interface CreateAppPayload {
+  name: string
+}
