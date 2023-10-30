@@ -23,6 +23,7 @@ import {
   type AddDataEntityPayload,
   type UpdateIndexPayload,
   type CreateAppPayload,
+  type UpdateAppPayload,
 } from './types'
 
 export class Metal implements Client {
@@ -689,6 +690,44 @@ export class Metal implements Client {
 
     return data
   }
+
+
+  async updateApp(appId: string, payload: UpdateAppPayload): Promise<object> {
+    if (!appId) {
+      throw new Error('App id is required');
+    }
+
+    if (payload.indexes && payload.indexes.length !== 1) {
+      throw new Error('at this time, only one index can be added to an app');
+    }
+
+    const body: UpdateAppPayload = {
+      ...payload,
+    }
+
+    const data = await fetch(`${API_URL}/v1/apps/${appId}`, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    });
+
+    if (!data.ok) {
+      const errorData = await data.json();
+      throw new Error(errorData.message || 'Failed to update app');
+    }
+
+    return data
+  }
+
+
+
 }
+
+
+
 
 export default Metal

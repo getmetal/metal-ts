@@ -1431,5 +1431,52 @@ describe('Metal', () => {
         )
       })
     })
+
+    describe('updateApp()', () => {
+
+      it('should update an app with payload', async () => {
+        const mockAppId = 'test_app_id';
+
+        const payload = {
+          name: 'UpdatedAppName',
+          indexes: ['indexId']
+        };
+
+        const metal = new Metal(API_KEY, CLIENT_ID);
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 200,
+          })
+        );
+
+        await metal.updateApp(mockAppId, payload);
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps/test_app_id');
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'PUT',
+          body: JSON.stringify(payload),
+          headers: HEADERS,
+        });
+      });
+
+      it('should throw an error if indexes array length is not 1', async () => {
+        const mockAppId = 'test_app_id';
+
+        const payloadWithInvalidIndexes = {
+          name: 'UpdatedAppName',
+          indexes: ['index1', 'index2']
+        };
+
+        const metal = new Metal(API_KEY, CLIENT_ID);
+
+        await expect(metal.updateApp(mockAppId, payloadWithInvalidIndexes)).rejects.toThrow('at this time, only one index can be added to an app');
+      });
+
+    });
   })
+
+
+
 })
