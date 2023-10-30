@@ -582,21 +582,20 @@ export class Metal implements Client {
 
   async getIndex(indexId: string): Promise<object> {
     if (!indexId) {
-        throw new Error('indexId required');
+      throw new Error('indexId required')
     }
 
     const data = await request(`${API_URL}/v1/indexes/${indexId}`, {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json',
-            'x-metal-api-key': this.apiKey,
-            'x-metal-client-id': this.clientId,
-        },
-    });
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-metal-api-key': this.apiKey,
+        'x-metal-client-id': this.clientId,
+      },
+    })
 
-    return data;
-}
-
+    return data
+  }
 
   async updateIndex(indexId: string, payload: UpdateIndexPayload): Promise<object> {
     if (!indexId) {
@@ -691,14 +690,13 @@ export class Metal implements Client {
     return data
   }
 
-
   async updateApp(appId: string, payload: UpdateAppPayload): Promise<object> {
     if (!appId) {
-      throw new Error('App id is required');
+      throw new Error('App id is required')
     }
 
     if (payload.indexes && payload.indexes.length !== 1) {
-      throw new Error('at this time, only one index can be added to an app');
+      throw new Error('at this time, only one index can be added to an app')
     }
 
     const body: UpdateAppPayload = {
@@ -713,21 +711,15 @@ export class Metal implements Client {
         'x-metal-api-key': this.apiKey,
         'x-metal-client-id': this.clientId,
       },
-    });
+    })
 
     if (!data.ok) {
-      const errorData = await data.json();
-      throw new Error(errorData.message || 'Failed to update app');
+      const errorData = await data.json()
+      throw new Error(errorData.message || 'Failed to update app')
     }
 
     return data
   }
-
-
-
 }
-
-
-
 
 export default Metal
