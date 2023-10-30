@@ -579,6 +579,24 @@ export class Metal implements Client {
     return data
   }
 
+  async getIndex(indexId: string): Promise<object> {
+    if (!indexId) {
+        throw new Error('indexId required');
+    }
+
+    const data = await request(`${API_URL}/v1/indexes/${indexId}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': this.apiKey,
+            'x-metal-client-id': this.clientId,
+        },
+    });
+
+    return data;
+}
+
+
   async updateIndex(indexId: string, payload: UpdateIndexPayload): Promise<object> {
     if (!indexId) {
       throw new Error('Index id is required')

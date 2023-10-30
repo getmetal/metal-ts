@@ -1241,6 +1241,31 @@ describe('Metal', () => {
       })
     })
 
+
+    describe('getIndex()', () => {
+
+      it('should error without `indexId`', async () => {
+        const metal = new Metal(API_KEY, CLIENT_ID);
+        // @ts-expect-error testing
+        const result = metal.getIndex();
+        await expect(result).rejects.toThrowError('indexId required');
+      });
+
+      it('should get an index by id', async () => {
+        const mockIndexId = 'test-index';
+
+        fetchMock.mockImplementationOnce(getMockRes({ id: mockIndexId, name: 'Some Index' }));
+
+        const metal = new Metal(API_KEY, CLIENT_ID);
+        await metal.getIndex(mockIndexId);
+
+        expect(fetchMock).toHaveBeenCalledWith(`https://api.getmetal.io/v1/indexes/${mockIndexId}`, {
+          method: 'GET',
+          headers: HEADERS,
+        });
+      });
+    });
+
     describe('updateIndex()', () => {
       it('should update an index with payload', async () => {
         const mockIndexId = 'test_index_id'
