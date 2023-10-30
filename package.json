@@ -1,6 +1,6 @@
 {
   "name": "@getmetal/metal-sdk",
-  "version": "7.6.0",
+  "version": "7.7.0",
   "description": "Metal SDK",
   "engineStrict": true,
   "engines": {
