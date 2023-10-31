@@ -1356,6 +1356,38 @@ describe('Metal', () => {
           },
         })
       })
+
+      it('should add an app with an associated index', async () => {
+        const mockAppName = 'test_app_with_index'
+        const mockIndexId = 'indexID'
+
+        const payload = {
+          name: mockAppName,
+          indexes: [mockIndexId],
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 201,
+          })
+        )
+
+        await metal.addApp(payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
     })
 
     describe('getApps()', () => {

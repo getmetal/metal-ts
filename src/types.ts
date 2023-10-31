@@ -181,6 +181,7 @@ export interface UpdateIndexPayload {
 
 export interface CreateAppPayload {
   name: string
+  indexes?: string[]
 }
 
 export interface UpdateAppPayload {
