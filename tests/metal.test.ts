@@ -1241,6 +1241,32 @@ describe('Metal', () => {
       })
     })
 
+    describe('getIndex()', () => {
+      it('should error without `indexId`', async () => {
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        // @ts-expect-error testing
+        const result = metal.getIndex()
+        await expect(result).rejects.toThrowError('indexId required')
+      })
+
+      it('should get an index by id', async () => {
+        const mockIndexId = 'test-index'
+
+        fetchMock.mockImplementationOnce(getMockRes({ id: mockIndexId, name: 'Some Index' }))
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+        await metal.getIndex(mockIndexId)
+
+        expect(fetchMock).toHaveBeenCalledWith(
+          `https://api.getmetal.io/v1/indexes/${mockIndexId}`,
+          {
+            method: 'GET',
+            headers: HEADERS,
+          }
+        )
+      })
+    })
+
     describe('updateIndex()', () => {
       it('should update an index with payload', async () => {
         const mockIndexId = 'test_index_id'
@@ -1306,6 +1332,38 @@ describe('Metal', () => {
 
         const payload = {
           name: mockAppName,
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 201,
+          })
+        )
+
+        await metal.addApp(payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: {
+            'Content-Type': 'application/json',
+            'x-metal-api-key': API_KEY,
+            'x-metal-client-id': CLIENT_ID,
+          },
+        })
+      })
+
+      it('should add an app with an associated index', async () => {
+        const mockAppName = 'test_app_with_index'
+        const mockIndexId = 'indexID'
+
+        const payload = {
+          name: mockAppName,
+          indexes: [mockIndexId],
         }
 
         const metal = new Metal(API_KEY, CLIENT_ID)
@@ -1403,6 +1461,50 @@ describe('Metal', () => {
 
         await expect(metal.getApp(invalidAppId)).rejects.toThrow(
           'App ID must have a length of 24 characters'
+        )
+      })
+    })
+
+    describe('updateApp()', () => {
+      it('should update an app with payload', async () => {
+        const mockAppId = 'test_app_id'
+
+        const payload = {
+          name: 'UpdatedAppName',
+          indexes: ['indexId'],
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        fetchMock.mockResolvedValueOnce(
+          new Response('', {
+            status: 200,
+          })
+        )
+
+        await metal.updateApp(mockAppId, payload)
+
+        expect(fetchMock).toHaveBeenCalledTimes(1)
+        expect(fetchMock.mock.calls[0][0]).toBe('https://api.getmetal.io/v1/apps/test_app_id')
+        expect(fetchMock.mock.calls[0][1]).toEqual({
+          method: 'PUT',
+          body: JSON.stringify(payload),
+          headers: HEADERS,
+        })
+      })
+
+      it('should throw an error if indexes array length is not 1', async () => {
+        const mockAppId = 'test_app_id'
+
+        const payloadWithInvalidIndexes = {
+          name: 'UpdatedAppName',
+          indexes: ['index1', 'index2'],
+        }
+
+        const metal = new Metal(API_KEY, CLIENT_ID)
+
+        await expect(metal.updateApp(mockAppId, payloadWithInvalidIndexes)).rejects.toThrow(
+          'at this time, only one index can be added to an app'
         )
       })
     })
