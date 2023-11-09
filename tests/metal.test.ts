@@ -537,7 +537,7 @@ describe('Metal', () => {
       await expect(result).rejects.toThrowError('indexId required')
     })
 
-    it('should get one by id', async () => {
+    it('should get multiple by id', async () => {
       const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
 
       fetchMock.mockImplementationOnce(
@@ -551,6 +551,25 @@ describe('Metal', () => {
 
       expect(fetchMock).toHaveBeenCalledWith(
         `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth,ironmaiden`,
+        {
+          headers: HEADERS,
+        }
+      )
+    })
+
+    it('should get one by id', async () => {
+      const metal = new Metal(API_KEY, CLIENT_ID, 'index-id')
+
+      fetchMock.mockImplementationOnce(
+        getMockRes({ id: 'megadeth', metadata: { vocalist: 'Dave Mustain' } })
+      )
+
+      const res = await metal.getMany(['megadeth'])
+
+      expect(Array.isArray(res)).toBe(true)
+
+      expect(fetchMock).toHaveBeenCalledWith(
+        `https://api.getmetal.io/v1/indexes/index-id/documents/megadeth`,
         {
           headers: HEADERS,
         }

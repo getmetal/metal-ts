@@ -205,6 +205,10 @@ export class Metal implements Client {
       },
     })
 
+    if (!Array.isArray(data)) {
+      return [data]
+    }
+
     return data
   }
 
